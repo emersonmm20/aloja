@@ -1,0 +1,22 @@
+.registro-body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form{
+    width: 50vw;
+    background: var(--color1);
+    padding: 20px;
+    border-radius: 10px;
+    min-width: 500px;
+}
+form h2{
+    text-align: center;
+    padding: 10px 0;
+    color: white;
+
+}
+form textarea{
+    width: 60%;
+}
