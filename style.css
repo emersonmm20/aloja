@@ -1,8 +1,9 @@
 :root{
-    --color1: #034C53;
-    --color2: #007074;
-    --color3: #F38C79;
-    --color4: #FFC1B4;
+    --color1: #bc9133;
+    --color2: #bc9133;
+    --color3: #a37209;
+    --color4: #fff;
+    --color5: #f6d65b;
 }
 
 *{
@@ -12,27 +13,31 @@
 }
 
 body{
-    background-image: url(recursos/imgs/wallpaper.jpg);
+    background-image: url(recursos/imgs/descarga\ \(4\).jpeg);
     background-repeat: no-repeat;
     background-size: 100vw 100vh;
     font-family: sans-serif;
 }
+
+
+
+
 header{
-    padding: 5px 0;
-    background-color: var(--color2);
-    width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between;  
     align-items: center;
+    background-color: var(--color2);
+    padding: 10px 15px;
+    color: white;
+
+}
+
+header h1{
+    font-family: 'Rammetto One', cursive;
+    font-size: 30px;
+    margin: 0;
+}
     
-}
-header img{
-    width: 50px;
-    border-radius: 50%;
-
-}
-
-
 
 #menu-secundario{
     display: none;
@@ -124,7 +129,7 @@ section {
 }
 section div{
     flex: 1;
-    color: var(--color1);
+    color: var(--color2);
 }
 section .content-section{
     height: calc(75vh);
@@ -159,18 +164,27 @@ section .content-section ul li{
 .filter{
     display: block;
     width: 100%;
-    padding: 20px;
+    background-color: var(--color2);
+    padding: 5x 10px;
+    color: white;
 }
 .filter > div{
-    background-color: var(--color2);
     color: #fff;
     padding: 10px 50px;
     border-radius: 8px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    
+    
+}
+.filter label {
+    color: #fff;
 }
 .filter button{
-    padding: 5px;
-    background-color: var(--color2);
-    color: #fff;
+    padding: 10px;
+    background-color: var(--color4);
+    color: #000;
     outline: none;
     border:  none;
     border-radius: 4px;
@@ -179,22 +193,59 @@ section .content-section ul li{
 }
 .filter button:hover{
     background-color: var(--color3);
-    padding: 5px;
-    color: #000;
     cursor: pointer;
 
+}
+.filter input{
+    background:#00000011;
+    border:none;
+    outline: none;
+    border-bottom: solid 1px;
+    border-radius: 5px;
+    color: #fff;
+}
+.filter-ID{
+    max-width: 75px;
 }
 
 
 
 
 
-
 section h2{
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--color4);
     width: 100%;
-    text-align: center;
+    text-align:justify;
     padding: 24px 0 ;
-    font-size: 28px;
+    font-size: 30px;
+    text-shadow:3px 3px 6px var(--color5);
+
+}
+
+
+#inicio{
+    background: rgba(0, 0, 0, .5);
+    height: 90vh;
+}
+
+
+.inicio{
+    text-align: center;
+    font-family: 'Rammetto One', cursive;
+    padding-top: 60px;
+    font-size: 55px;
+    margin: 0;
+    text-shadow: 3px 3px 6px var(--color5);
+    
+}
+
+.bajar-texto{
+    text-align: center;
+    font-family: 'Rammetto One', cursive;
+    padding-top: 200px;
+    font-size: 40px;
+    margin: 0;
 }
 
 
@@ -223,9 +274,11 @@ section h2{
 }
 
 
+/* ---------------------------tabla fin */
 table {
     width: 100%;
     border-collapse: collapse;
+    color: #000;
 }
 th, td {
     border: 1px solid #ddd;
@@ -238,14 +291,14 @@ tr{
 
 }
 tr:hover{
-    background-color: var(--color3);
+    background-color: var(--color2);
     cursor: pointer;
-    color: var(--color1);
+    
 }
 th {
     background-color: #f2f2f2;
 }
-
+/* ---------------------------tabla fin */
 .form{
     background: var(--color2);
     border-radius: 20px;
@@ -257,25 +310,127 @@ th {
 }
 
 .form-group{
-    font-size: 18px;
-    color: white;
     padding: 10px 0px;
     display: flex;
     justify-content: space-between;
 }
 .form-group label{
+    font-size: 16px;
+    color: white;
     /* display: block; */
 }
+.form-group input[type="number"],
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="email"],
+.form-group textarea,
+.form-group select {
+    width: 50%;
+    text-align: right;
+    background-color: var(--color4);
+    outline: none;
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+}
+
 .form button{
     padding: 10px;
-    background: var(--color4);
+    text-align: center;
+    justify-content: space-between;
+    background: var(--color5);
     color: black;
     border-radius: 8px;
     border: none;
     margin-top: 20px;
-
+    transition: background .5s;
+}
+.form button:hover {
+    background: var(--color1);
+    cursor: pointer;
+    color: white;
 }
 
+/* Aqui empieza el buscador de la pagina de inicio */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    flex-direction: row;
+  }
+  
+  .buscador {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    background-color: rgba(249, 238, 238, 0.599); /* Blanco con 50% de opacidad */
+    padding: 11px;
+    border: 2px solid var(--color2);
+    width: fit-content;
+    margin: 50px auto;
+    border-radius: 6px;
+  }
+  
+  .campo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    background-color: rgba(249, 238, 238, 0.599);
+    min-width: 100px;
+    border-right: 1px solid var(--color5);
+  }
+  
+  .campo:last-child {
+    border-right: none;
+  }
+  
+  label {
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: var(--color3);
+    font-weight: bold;
+  }
+  
+  input[type="date"],
+  input[type="number"] {
+    width: 100%;
+    padding: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  .contador {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .contador button {
+    width: 25px;
+    height: 25px;
+    background-color: var(--color2);
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .buscar-btn {
+    background-color: var(--color1);
+    color: var(--color4);
+    font-weight: bold;
+    padding: 15px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    align-self: center;
+  }
+/* Aqui termina el buscador de la pagina de inicio */
+.select-estado-habitacion{
+    display: none;
+}
 
 
 

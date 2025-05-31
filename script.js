@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+// document.addEventListener('DOMContentLoaded', function() {
     const botonesCambiarSeccion = document.querySelectorAll(".select-section-button");
-    const sections = document.querySelectorAll(".seccion");
+    var sections = document.querySelectorAll(".seccion");
 
     // Función para normalizar el texto a ID
     function textToId(text) {
@@ -39,6 +39,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mostrar primera sección al cargar
     if (sections.length > 0) {
         // Usamos el ID real de la primera sección en lugar de generarlo
-        showSection(sections[0].id);
+        if(GET){
+            if(document.getElementById(GET)){
+                showSection(GET)
+            }
+            else{
+                location.href="index.php"    
+            }
+        }
+        else{
+
+            showSection(sections[0].id);
+        }
     }
-});
+
+
+// });
+
+// window.addEventListener("load",()=>{
+//     setTimeout(()=>{
+//         showSection('$section')
+//     },500)
+// })
+

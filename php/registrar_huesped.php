@@ -46,21 +46,14 @@ if($resultado->num_rows == 0){
 }
 
 
-
-
-
+//Si no tiene informacion sobre "PAGOS" cerrar la coneccion y retornar al index
 if(!$_POST["habitacion"]){
-    //En caso de que no existan variables de pago, salir despues de mensaje
-
+    
+    $conn->close(); 
     echo "<script>
-    
-    alert('usuario registrado exitosamente')
-    location.href='../index.php'
-    
+    location.href='../index.php?section=registro-de-huespedes'
     </script>";
 }
-//registrar pago si tambien viene incluido en el post.
-
 
 else {
     include "registrar_estadia.php";
@@ -75,7 +68,6 @@ else {
     // registrarEstadia($fecha_inicio,$fecha_fin,$monto,$habitacion)
     $sql = "SELECT * from huesped where TIPODOCUMENTO = '$tipo_documento' and DOCUMENTO = '$numero_documento'";
 
-
     $huesped = mysqli_query($conn,$sql);
     while($fila = mysqli_fetch_assoc($huesped)){
         $id_huesped=$fila["idHUESPED"];
@@ -84,19 +76,13 @@ else {
     //Registrar pago:
     include "registrar_pago.php";
     registrarPago($conn,$monto,date('Y-m-d'),$id_huesped,$id_estadia);
+    $conn->close(); 
 
-
-
-
-    
-
-
-    print_r($resultado);
 
 
 }
 
-echo "<script>location.href='../index.php'</script>"
+echo "<script>location.href = '../index.php?section=registro-de-pagos'</script>"
 
 
 ?>

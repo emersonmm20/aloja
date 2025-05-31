@@ -19,15 +19,16 @@ $fecha_fin=$_POST["fecha_fin"];
 
 
 
-$sql = "SELECT * FROM huesped WHERE DOCUMENTO = $numero_documento";
-$result = mysqli_query($conn,$sql);
+$sql = "SELECT * FROM huesped WHERE DOCUMENTO = $numero_documento AND TIPODOCUMENTO = '$tipo_documento'";
+$huesped = mysqli_query($conn,$sql);
 
-if ($result->num_rows == 0){
+if ($huesped->num_rows == 0){
 
 
     print( "<script>
     alert('Huesped no existe')
     </script>");
+    $conn->close(); 
 
 ?>
 
@@ -112,6 +113,24 @@ if ($result->num_rows == 0){
 
 //Si el huesped ya esta en la base de datos:
 else{
+    include "registrar_estadia.php";
+    include "registrar_pago.php";
+
+    //Registrar primero la estadia:
+    $id_estadia=registrarEstadia($conn,$fecha_inicio,$fecha_fin,$monto,$habitacion);
+
+    while($fila = mysqli_fetch_assoc($huesped)){
+        $id_huesped=$fila["idHUESPED"];
+    }
+    registrarPago($conn,$monto,date('Y-m-d'),$id_huesped,$id_estadia);
+    //ocupar habitacion
+    mysqli_query($conn, "UPDATE `habitaciones` SET `ESTADO` = 'OCUPADA' WHERE `idHABITACIONES` = $habitacion");
+    $conn->close(); 
+    echo " 
+    <script>
+    window.location.href = '../index.php?section=registro-de-pagos'
+    </script>";
+
 
 }
 ?>
