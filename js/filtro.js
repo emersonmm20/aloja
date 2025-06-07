@@ -1,29 +1,26 @@
-//Filtro
+Array.from(document.getElementsByClassName("filter")).forEach(filter=>{
+    filter.addEventListener("submit",(e)=>{
+    e.preventDefault()
 
-// ---------------------------------------********************
+    const formData= new FormData(e.target)
+    console.log(formData)
 
-//ESTRUCTURA BOTONES VALUES
-//[TABLE, SQLTABLE, ELEMENTOS....]
-
-// ---------------------------------------********************
-
-
-const botones = Array.from(document.getElementsByClassName("btn-buscar"))
-
-botones.forEach(btn=>{
-    if(btn.getAttribute("value")){
-        btn.addEventListener("click",()=>filtrar(btn.getAttribute("value").split(",")))
+    var objet = new XMLHttpRequest()
+    objet.open('POST','js/filtro.php',true)
+    objet.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    objet.onreadystatechange=function (){
+        console.log(objet.responseText)
     }
+    objet.send(formData)
+
+
+})
 })
 
 
-const filtrar =(valores)=>{
-    let tablaHTML=valores[0]
-    let tablaSQL=valores[2]
-    alert(valores)
-    // let parametrosFiltro=
 
-}
+// document.getElementsByClassName("filter").addEventListener("submit",(e)=>{
+//     e.preventDefault()
+//     const formData=
 
-
-
+// })

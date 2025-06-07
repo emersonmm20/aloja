@@ -211,13 +211,13 @@ $conn = conectarDB();
                 <h2>Historial de Pagos</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
+                <form class="filter">
                     <p>Filtrar por:</p>
                     <div class="filter-inputs">
 
                         <!-- ID, MONTO, Fecha, huesped, estadia -->
-                        <label for="filtro-servicio-pago">ID:</label>
-                        <input type="number" id="filtro-servicio-pago" class="filter-ID" name="filtro-servicio-pago" placeholder="0"> 
+                        <label for="id-pago">ID:</label>
+                        <input type="number" id="id-pago" class="filter-ID" name="id-pago" placeholder="0"> 
                         <label for="monto-pago">Monto:</label>
                         <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
                         <label for="fecha-inicio-pago">fecha inicio:</label>
@@ -225,10 +225,11 @@ $conn = conectarDB();
                         <label for="fecha-fin-pago">Fecha fin:</label>
                         <input type="date" id="fecha-fin-pago" name="fecha-fin-pago" placeholder=""> 
                         <label for="huesped-pago">Huesped:</label>
-                        <input type="number" id="huesped-pago" name="huesped-pago" placeholder=""> 
+                        <input type="text" id="huesped-pago" name="huesped-pago" placeholder="">
+                        <input type="hidden" name="form" value="tabla-pagos">
                     </div>
-                    <button onclick="" class="btn-buscar" value="registros-pagos,pagos,filtro-servicio-pago,monto-pago,fecha-inicio-pago,fecha-fin-pago,huesped-pago,id-estadia-pago">Buscar</button>
-                </div>
+                    <button class="btn-buscar" type="submit">Buscar</button>
+                    </form>
 
                 <div class="table-container">
                     <table class="tabla-pagos">
@@ -288,7 +289,7 @@ $conn = conectarDB();
                 <h2>Administrar habitaciones</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
+                <form class="filter">
                     <p>Filtrar por:</p>
                     <div class="filter-inputs">
 
@@ -310,9 +311,10 @@ $conn = conectarDB();
                             <option value="DESOCUPADA">Desocupada</option>
                             <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
                         </select>
-
-                    </div>
-                    <button class="btn-buscar" >Buscar</button>
+                        <input type="hidden" value="tabla-pagos" name="form">
+                        
+                        <button class="btn-buscar" type="submit">Buscar</button>
+                    </form>
                     <button>Agregar habitacion</button>
                 </div>
                 
@@ -376,7 +378,7 @@ $conn = conectarDB();
             <h2>Lista de Huéspedes</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
+                <form class="filter">
                     <p>Filtrar por:</p>
                     <div>
                         <label for="filtro-nombre">Nombre:</label>
@@ -391,11 +393,12 @@ $conn = conectarDB();
                             <option value="tarjeta-identidad">Tarjeta de Identidad</option>
                             <option value="permiso-proteccion">Permiso por Protección Temporal</option>
                         </select>
+                        <input type="hidden" name="form" value="tabla-huespedes">
                         
-                        <button class="btn-buscar">Buscar</button>
+                        <button class="btn-buscar" type="submit">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                     </div>
-                </div>
+                </form>
                 
                 <div class="table-container">
                     <table class="tabla-huespedes">
@@ -444,7 +447,7 @@ $conn = conectarDB();
             <h2>Estadias</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
+                <form class="filter">
                     <p>Filtrar por:</p>
                     <div>
                         <label for="filtro-id-estadia">ID:</label>
@@ -459,11 +462,11 @@ $conn = conectarDB();
                         <input type="number" name="filtro-costo-estadia" id="filtro-costo-estadia">
                         <label for="filtro-habitacion-estadia">Habitacion:</label>
                         <input type="number" name="filtro-habitacion-estadia" id="filtro-habitacion-estadia">
-                        
-                        <button class="btn-buscar">Buscar</button>
+                        <input type="hidden" name="form" value="tabla-huespedes">
+                        <button class="btn-buscar" type="submit">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                     </div>
-                </div>
+                </form>
                 
                 <div class="table-container">
                     <table class="tabla-huespedes">
@@ -581,6 +584,8 @@ $conn = conectarDB();
     <script src="script.js?v=<?php echo time(); ?>"></script>
     <script src="js/filtro.js?v=<?php echo time(); ?>"></script>
     <script src="js/habitaciones_acciones.js?v=<?php echo time(); ?>"></script>
+        <!-- Usando CDN de jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
 
 </body>
