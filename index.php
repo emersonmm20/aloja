@@ -15,6 +15,7 @@ $conn = conectarDB();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin AloJa</title>
     <link href="https://fonts.googleapis.com/css2?family=Rammetto+One&display=swap" rel="stylesheet"> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- <link rel="stylesheet" href="style.css"> -->
     <link rel="stylesheet" href="style.css?v=<?php echo(rand()); ?>" />
 </head>
@@ -87,6 +88,13 @@ $conn = conectarDB();
                         
                     </ul>
                 </li>
+
+                <li><a >Tarifas del Hotel</a>
+                    <ul>
+                        <li><a  class="select-section-button">Tarifas</a></li>
+                        
+                    </ul>
+                </li>
         </nav>
 </header>
     
@@ -97,7 +105,7 @@ $conn = conectarDB();
                 </div>
 
                 <div>
-                    <h2 class="bajar-texto">Ven Relájate Y Conéctate Contigo Mismo</h2>
+                    <h2 class="bajar-texto">Página del Administrador</h2>
                 </div>
 
                 <!-- <div class="buscador">
@@ -205,6 +213,62 @@ $conn = conectarDB();
                 </form>
             </div>
         </section>
+
+        <section class="seccion text-start " id="servicios-y-alojamientos">
+            <div class="content-section">
+                <h2>Servicios y Alojamientos</h2>
+
+                <div class="d-flex justify-content-end mb-2">
+                    <a href="./php/crear_servicio.php" class="btn btn-primary">Crear Servicio</a>
+                </div>
+                
+                <table class="table-container">
+                    <thead class="table-servicios">
+                        
+                     <tr>
+                        <th>Servicio</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Imagen</th>
+                        <th>Acciones</th>
+                     </tr>
+                   </thead>
+                
+                   <tbody>
+                    <?php
+                    $servicios = mysqli_query($conn, "SELECT * from servicios");
+                    if (mysqli_num_rows($servicios) == 0) {
+                        echo "<tr><td colspan='5' class='text-center'>No hay servicios registrados.</td></tr>";
+                    }
+                    
+                    while ($fila = mysqli_fetch_assoc($servicios)) {
+                        ?>
+                        
+                        <tr>
+                            <td><?= htmlspecialchars($fila["idSERVICIOS"]) ?></td>
+                            <td><?= htmlspecialchars($fila["DESCRIPCION"]) ?></td>
+                            <td><?= htmlspecialchars($fila["ESTADO"]) ?></td>
+                            <td>
+                                <?php if (!empty($fila["IMAGEN"])): ?>
+                                    <a href="recursos/imgs/<?= $fila["IMAGEN"] ?>" target="_blank" class="btn btn-sm btn-outline-secondary">Ver</a>
+                                    <?php else: ?>
+                                        <span class="text-muted">Sin imagen</span>
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <td>
+                                        <a href="./php/editar_servicio.php?id=<?=$fila["idSERVICIOS"] ?>" class="btn btn-sm btn-warning">Editar</a>
+                                        <a href="./php/eliminar_servicio.php?id=<?= $fila["idSERVICIOS"] ?>" class="btn btn-sm btn-danger " onclick="return confirm('¿Seguro que deseas eliminar este servicio?');">Eliminar</a>
+                             </td>
+                        </tr>
+                        <?php
+                        }
+                        ?>
+                   </tbody>
+                
+                </table>
+            </div>
+       </section>
 
         <section class="seccion" id="historial-de-pagos">
             <div class="title-section">
@@ -564,7 +628,213 @@ $conn = conectarDB();
             </form>
             </div>
         </section>
-    </div>    
+    </div>   
+    
+    
+        <section class="seccion" id="tarifas">
+    <div class="title-section">
+        <h2>Tarifas del Hotel</h2>
+    </div>
+    <div class="d-flex justify-content-end mb-2">
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRegistrar">
+    Nueva Tarifa
+  </button>
+</div>
+    <div class="content-section">
+        <div class="filter">
+            <p>Filtrar por:</p>
+            <div>
+                <label for="filtro-habitaciones">Tipo de Habitación:</label>
+                <select id="filtro-habitaciones" name="habitaciones">
+                    <option value="">Seleccione una opción...</option>
+                    <option value="1">Habitación Económica</option>
+                    <option value="2">Habitación Individual</option>
+                    <option value="3">Habitación Doble</option>
+                    <option value="4">Habitación Familiar</option>
+                    <option value="5">Habitación Estándar</option>
+                    <option value="6">Habitación Matrimonial</option>
+                    <option value="7">Habitación Triple</option>
+                    <option value="8">Suite Junior </option>
+                    <option value="9">Suite Ejecutiva</option>
+                </select>
+                
+                <label for="filtro-capacidad">Capacidad:</label>
+                <select id="filtro-capacidad" name="capacidad">
+                    <option value="">Seleccione una opción...</option>
+                    <option value="1">1 Persona</option>
+                    <option value="2">2 Personas</option>
+                    <option value="3">3 Personas</option>
+                    <option value="4">4 Personas</option>
+                    <option value="5">5 o más</option>
+                </select>
+                
+                <button class="btn btn-success">Buscar</button>
+                <button class="btn btn-secondary">Limpiar</button>
+
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="tabla-tarifas">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo de Habitación</th>
+                        <th>Capacidad</th>
+                        <th>Precio por Noche</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="tarifa">
+                    <?php 
+                    $tarifas = mysqli_query($conn, "SELECT * FROM tarifa ORDER BY idTARIFA DESC LIMIT 15");
+                    while($fila = mysqli_fetch_assoc($tarifas)){
+                    ?> 
+                    
+                        <tr>
+                            <td><?=$fila["idTARIFA"]?></td>
+                            <td><?=$fila["TIPOHABITACIONES"]?></td>
+                            <td><?=$fila["CAPACIDAD"]?></td>
+                            <td>$<?=number_format($fila["PRECIOPORNOCHE"], 0, ',', '.')?></td>
+                            <td><?=$fila["DESCRIPCION"]?></td>
+
+                            <td>
+                                <button
+                                 class="btn btn-primary btn-sm" 
+                                 data-bs-toggle="modal" 
+                                 data-bs-target="#modalEditar<?=$fila['idTARIFA']?>"
+                                >
+                                  Editar
+                                </button>
+                                <button 
+                                 class="btn btn-danger btn-sm" 
+                                 data-bs-toggle="modal" 
+                                 data-bs-target="#modalEliminar<?=$fila['idTARIFA']?>"
+                                >
+                                  Eliminar
+                                </button>
+                            </td>
+
+                        </tr>
+                    <?php
+                    }
+                    ?>
+
+                        <!-- Modal Registrar -->
+<div class="modal fade" id="modalRegistrar" tabindex="-1" aria-labelledby="registrarLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/php/registrar_tarifa.php" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="registrarLabel">Registrar Nueva Tarifa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="mb-3">
+            <label class="form-label">Tipo de Habitación</label>
+            <input type="text" name="TIPOHABITACIONES" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Capacidad</label>
+            <input type="text" name="CAPACIDAD" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Precio por Noche</label>
+            <input type="number" name="PRECIOPORNOCHE" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea name="DESCRIPCION" class="form-control" required></textarea>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Registrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+                        <!-- Modal Editar -->
+<div class="modal fade" id="modalEditar<?=$fila['idTARIFA']?>" tabindex="-1" aria-labelledby="editarLabel<?=$fila['idTARIFA']?>" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/php/editar_tarifa.php " method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editarLabel<?=$fila['idTARIFAS']?>">Editar Tarifa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="id" value="<?=$fila['idTARIFA']?>">
+
+            <div class="mb-3">
+                <label class="form-label">Tipo de Habitación</label>
+                <input type="text" name="TIPOHABITACIONES" class="form-control" value="<?=$fila['TIPOHABITACIONES']?>">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Capacidad</label>
+                <input type="text" name="CAPACIDAD" class="form-control" value="<?=$fila['CAPACIDAD']?>">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Precio por Noche</label>
+                <input type="number" name="PRECIOPORNOCHE" class="form-control" value="<?=$fila['PRECIOPORNOCHE']?>">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <textarea name="DESCRIPCION" class="form-control"><?=$fila['DESCRIPCION']?></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade" id="modalEliminar<?=$fila['idTARIFA']?>" tabindex="-1" aria-labelledby="eliminarLabel<?=$fila['idTARIFA']?>" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/php/eliminar_tarifa.php" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="eliminarLabel<?=$fila['idTARIFA']?>">Eliminar Tarifa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" value="<?=$fila['idTARIFA']?>">
+          <p>¿Estás seguro de que deseas eliminar la tarifa <strong>#<?=$fila['idTARIFA']?></strong>?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Eliminar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+            
+                    
+                    
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 
     <?php
     if(isset($_GET['section'])){
