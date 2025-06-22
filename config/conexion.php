@@ -3,7 +3,7 @@ function conectarDB(){
 
     $host= "localhost";
     $user= "root";
-    $password="";
+    $password="12345678";
     $database="mydb";
 
     $mysqli = new mysqli($host, $user, $password, $database);

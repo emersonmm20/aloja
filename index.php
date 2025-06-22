@@ -11,12 +11,13 @@ $conn = conectarDB();
 <html lang="es">
 <head>
     
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin AloJa</title>
     <link href="https://fonts.googleapis.com/css2?family=Rammetto+One&display=swap" rel="stylesheet"> 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css?v=<?php echo(rand()); ?>" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js?v=<?php echo(rand()); ?>" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css?v=<?php echo(rand()); ?>" />
 </head>
 <body>
@@ -39,7 +40,7 @@ $conn = conectarDB();
                 </li>
                 
 
-                <li><a >Gestón de Portafolio</a>
+                <li><a >Portafolio</a>
                     <ul>
                         <li><a  class="select-section-button">Servicios y Alojamientos</a></li>
                         </li> 
@@ -67,14 +68,11 @@ $conn = conectarDB();
 
                 
 
-                <li><a >Cancelación y Reembolsos</a>
-                    <ul>
-                        <li><a  class="select-section-button">Registro</a></li>
-                        
-                    </ul>
+                <li><a  class="select-section-button">Cancelaciones</a>
+                    
                 </li>
 
-                <li><a >Usuarios y Roles</a>
+                <li><a >Usuarios</a>
                     <ul>
                         <li><a  class="select-section-button">Lista de Usuarios</a></li>
                         
@@ -82,23 +80,19 @@ $conn = conectarDB();
                 </li>
 
 
-                <li><a >Informes y Reportes</a>
+                <li><a >Informes</a>
                     <ul>
                         <li><a  class="select-section-button">Generar</a></li>
                         
                     </ul>
                 </li>
 
-                <li><a >Tarifas del Hotel</a>
-                    <ul>
-                        <li><a  class="select-section-button">Tarifas</a></li>
-                        
-                    </ul>
+                <li><a  class="select-section-button">Tarifas</a>
                 </li>
         </nav>
 </header>
     
-    <div class="container">
+    <div class="content">
         <section class="seccion" id="inicio">
                 <div class="title-section">
                     <h2 class="inicio">Bienvenidos</h2>
@@ -215,22 +209,22 @@ $conn = conectarDB();
         </section>
 
         <section class="seccion text-start " id="servicios-y-alojamientos">
-            <div class="content-section">
+            <div class="title-section">
                 <h2>Servicios y Alojamientos</h2>
 
-                <div class="d-flex justify-content-end mb-2">
-                    <a href="./php/crear_servicio.php" class="btn btn-primary">Crear Servicio</a>
-                </div>
+            </div>
+            <div class="content-section">
+
+                <a href="./php/crear_servicio.php" class="crear-servicio-button btn btn-primary btn-lg btn-block bg-success">Crear Servicio</a>
                 
-                <table class="table-container">
-                    <thead class="table-servicios">
-                        
+                <table class="table-container table">
+                    <thead class="table-servicios thead-dark">
                      <tr>
-                        <th>Servicio</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th>Imagen</th>
-                        <th>Acciones</th>
+                        <th scope="col">Servicio</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Acciones</th>
                      </tr>
                    </thead>
                 
@@ -268,45 +262,57 @@ $conn = conectarDB();
                 
                 </table>
             </div>
-       </section>
+        </section>
 
         <section class="seccion" id="historial-de-pagos">
             <div class="title-section">
                 <h2>Historial de Pagos</h2>
             </div>
             <div class="content-section">
-                <form class="filter">
-                    <p>Filtrar por:</p>
+                <form class="filter filter-pagos">
+                    
                     <div class="filter-inputs">
 
-                        <!-- ID, MONTO, Fecha, huesped, estadia -->
-                        <label for="id-pago">ID:</label>
-                        <input type="number" id="id-pago" class="filter-ID" name="id-pago" placeholder="0"> 
-                        <label for="monto-pago">Monto:</label>
-                        <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
-                        <label for="fecha-inicio-pago">fecha inicio:</label>
-                        <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
-                        <label for="fecha-fin-pago">Fecha fin:</label>
+                        <div class="filter-group">
+                            <label for="id-pago">ID:</label>
+                            <input type="number" id="id-pago" class="filter-ID" name="id-pago" placeholder="0"> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="monto-pago">Monto:</label>
+                            <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="fecha-inicio-pago">fecha inicio:</label>
+                            <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="fecha-fin-pago">Fecha fin:</label>
                         <input type="date" id="fecha-fin-pago" name="fecha-fin-pago" placeholder=""> 
-                        <label for="huesped-pago">Huesped:</label>
-                        <input type="text" id="huesped-pago" name="huesped-pago" placeholder="">
+                        </div>
+                        <div class="filter-group">
+                            <label for="huesped-pago">Huesped:</label>
+                            <input type="text" id="huesped-pago" name="huesped-pago" placeholder="">
+                        </div>
                         <input type="hidden" name="form" value="tabla-pagos">
                     </div>
                     <button class="btn-buscar" type="submit">Buscar</button>
                     </form>
 
                 <div class="table-container">
-                    <table class="tabla-pagos">
-                        <thead>
+                    <table class="tabla-pagos table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>ID Pago</th>
-                                <th>Monto</th>
-                                <th>FECHA DE PAGO</th>
-                                <th>Huesped</th>
-                                <th>id Estadia</th>
-                                <th>Empleado</th>
+                                <th scope="col">ID Pago</th>
+                                <th scope="col">Monto</th>
+                                <th scope="col">FECHA DE PAGO</th>
+                                <th scope="col">Huesped</th>
+                                <th scope="col">id Estadia</th>
+                                <th scope="col">Empleado</th>
                                 
-                                <th>Acciones</th>
+                                <th scope="col">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="registros-pagos">
@@ -354,42 +360,49 @@ $conn = conectarDB();
             </div>
             <div class="content-section">
                 <form class="filter">
-                    <p>Filtrar por:</p>
                     <div class="filter-inputs">
+                        <div class="filter-group">
+                            <label for="filtro-id-habitaciones">ID:</label>
+                            <input type="number" id="filtro-id-habitaciones" class="filter-ID" name="filtro-id-habitaciones" placeholder="">
+                        </div>
 
-                        <!-- ID, MONTO, Fecha, huesped, estadia -->
-                        <label for="filtro-id-habitaciones">ID:</label>
-                        <input type="number" id="filtro-id-habitaciones" class="filter-ID" name="filtro-id-habitaciones" placeholder=""> 
+                        <div class="filter-group">
+                            <label for="filtro-numero-habitaciones">Monto:</label>
+                            <input type="number" id="filtro-numero-habitaciones" name="filtro-numero-habitaciones" placeholder="">
+                        </div>
 
-                        <label for="filtro-numero-habitaciones">Monto:</label>
-                        <input type="number" id="filtro-numero-habitaciones" name="filtro-numero-habitaciones" placeholder=""> 
+                        <div class="filter-group">
+                            <label for="filtro-capacidad-habitaciones">fecha inicio:</label>
+                            <input type="number" id="filtro-capacidad-habitaciones" name="filtro-capacidad-habitaciones" placeholder="">
+                        </div>
 
-                        <label for="filtro-capacidad-habitaciones">fecha inicio:</label>
-                        <input type="number" id="filtro-capacidad-habitaciones" name="filtro-capacidad-habitaciones" placeholder=""> 
+                        <div class="filter-group">
+                            <label for="filtro-estado-habitaciones">Fecha fin:</label>
+                            <select name="filtro-estado-habitaciones" id="filtro-estado-habitaciones">
+                                <option value="">Seleccionar estado</option>
+                                <!-- ENUM('OCUPADA', 'DESOCUPADA', 'FUERA_DE_SERVICIO') -->
+                                <option value="OCUPADA">Ocupada</option>
+                                <option value="DESOCUPADA">Desocupada</option>
+                                <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
+                            </select>
+                        </div>
 
-                        <label for="filtro-estado-habitaciones">Fecha fin:</label>
-                        <select name="filtro-estado-habitaciones" id="filtro-estado-habitaciones">
-                            <option value="">Seleccionar estado</option>
-                            <!-- ENUM('OCUPADA', 'DESOCUPADA', 'FUERA_DE_SERVICIO') -->
-                            <option value="OCUPADA">Ocupada</option>
-                            <option value="DESOCUPADA">Desocupada</option>
-                            <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
-                        </select>
-                        <input type="hidden" value="tabla-pagos" name="form">
-                        
+                        <!-- Elementos NO encapsulados -->
+                        <input type="hidden" value="tabla-habitaciones" name="form">
                         <button class="btn-buscar" type="submit">Buscar</button>
-                    </form>
-                    <button>Agregar habitacion</button>
-                </div>
+                        <button>Agregar habitacion</button>
+                    </div>
+                </form>
+            
                 
                 <div class="table-container">
-                    <table class="tabla-pagos">
-                        <thead>
+                    <table class="tabla-pagos table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>Numero</th>
-                                <th>Capacidad</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
+                                <th scope="col">Numero</th>
+                                <th scope="col">Capacidad</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col" class="tabla-acciones">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="tabla-habitaciones">
@@ -408,17 +421,18 @@ $conn = conectarDB();
                                         class="btn-estado-habitacion"
                                         id=<?="cambiar-estado-boton-$id"?>
                                         value=<?=$id?> onclick=<?="mostrarSelectHabitaciones($id)"?> >Cambiar Estado</button>
-                                        <div id=<?="select-estado-habitacion-$id"?> class="select-estado-habitacion">
-                                            <select id=<?="nuevo-estado-habitacion-$id"?>>
+                                        <div id=<?="select-estado-habitacion-$id"?>
+                                             class="select-estado-habitacion rounded">
+                                            <select id=<?="nuevo-estado-habitacion-$id" ?> class="select-table">
                                                 <option value="">Selecciona Estado</option>
                                                 <option value="OCUPADA">Ocupada</option>
                                                 <option value="DESOCUPADA">Desocupada</option>
                                                 <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
                                             </select>
-                                            <button class="actualizar-estado-habitacion"
+                                            <button class="actualizar-estado-habitacion bg-success text-light btn btn-success"
                                             onclick=<?="enviarYActualizar($id)"?>
-                                            value=<?=$id?>>Actualizar</button>
-                                            <button class="cancelar-estado" value=<?=$id?>>X</button>
+                                            value=<?=$id?>>Modificar</button>
+                                            <button class="cancelar-estado btn btn-danger" value=<?=$id?>>X</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -443,39 +457,43 @@ $conn = conectarDB();
             </div>
             <div class="content-section">
                 <form class="filter">
-                    <p>Filtrar por:</p>
                     <div>
-                        <label for="filtro-nombre">Nombre:</label>
-                        <input type="text" id="filtro-nombre" placeholder="Buscar por nombre">
-                        
-                        <label for="filtro-documento">Tipo Documento:</label>
-                        <select id="filtro-documento" name="tipo_documento" required>
-                            <option value="">Seleccione un tipo...</option>
-                            <option value="cedula-extranjeria">Cédula de Extranjería</option>
-                            <option value="cedula-identidad">Cédula de Identidad</option>
-                            <option value="pasaporte">Pasaporte</option>
-                            <option value="tarjeta-identidad">Tarjeta de Identidad</option>
-                            <option value="permiso-proteccion">Permiso por Protección Temporal</option>
-                        </select>
+                        <div class="filter-group">
+                            <label for="filtro-nombre">Nombre:</label>
+                            <input type="text" id="filtro-nombre" placeholder="Buscar por nombre">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-documento">Tipo Documento:</label>
+                            <select id="filtro-documento" name="tipo_documento" required>
+                                <option value="">Seleccione un tipo...</option>
+                                <option value="cedula-extranjeria">Cédula de Extranjería</option>
+                                <option value="cedula-identidad">Cédula de Identidad</option>
+                                <option value="pasaporte">Pasaporte</option>
+                                <option value="tarjeta-identidad">Tarjeta de Identidad</option>
+                                <option value="permiso-proteccion">Permiso por Protección Temporal</option>
+                            </select>
+                        </div>
+
+                        <!-- Elementos NO encapsulados -->
                         <input type="hidden" name="form" value="tabla-huespedes">
-                        
                         <button class="btn-buscar" type="submit">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                     </div>
                 </form>
                 
                 <div class="table-container">
-                    <table class="tabla-huespedes">
-                        <thead>
+                    <table class="tabla-huespedes table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>ID</th>
-                                <th>Nombre Completo</th>
-                                <th>Tipo Documento</th>
-                                <th>Numero Documento</th>
-                                <th>Teléfono</th>
-                                <th>Email</th>
-                                <th>Observaciones</th>
-                                <th>Acciones</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Nombre Completo</th>
+                                <th scope="col">Tipo Documento</th>
+                                <th scope="col">Numero Documento</th>
+                                <th scope="col">Teléfono</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Observaciones</th>
+                                <th scope="col">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla">
@@ -512,37 +530,55 @@ $conn = conectarDB();
             </div>
             <div class="content-section">
                 <form class="filter">
-                    <p>Filtrar por:</p>
                     <div>
-                        <label for="filtro-id-estadia">ID:</label>
-                        <input type="number" name="filtro-id-estadia" class="filter-ID" id="filtro-id-estadia">
-                        <label for="filtro-inicio-estadia">Inicio:</label>
-                        <input type="date" name="filtro-inicio-estadia" id="filtro-inicio-estadia">
-                        <label for="filtro-fin-estadia">Fin:</label>
-                        <input type="date" name="filtro-fin-estadia" id="filtro-fin-estadia">
-                        <label for="filtro-registro-estadia">Registrado:</label>
-                        <input type="date" name="filtro-registro-estadia" id="filtro-registro-estadia">
-                        <label for="filtro-costo-estadia">Costo:</label>
-                        <input type="number" name="filtro-costo-estadia" id="filtro-costo-estadia">
-                        <label for="filtro-habitacion-estadia">Habitacion:</label>
-                        <input type="number" name="filtro-habitacion-estadia" id="filtro-habitacion-estadia">
-                        <input type="hidden" name="form" value="tabla-huespedes">
+                        <div class="filter-group">
+                            <label for="filtro-id-estadia">ID:</label>
+                            <input type="number" name="filtro-id-estadia" class="filter-ID" id="filtro-id-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-inicio-estadia">Inicio:</label>
+                            <input type="date" name="filtro-inicio-estadia" id="filtro-inicio-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-fin-estadia">Fin:</label>
+                            <input type="date" name="filtro-fin-estadia" id="filtro-fin-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-registro-estadia">Registrado:</label>
+                            <input type="date" name="filtro-registro-estadia" id="filtro-registro-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-costo-estadia">Costo:</label>
+                            <input type="number" name="filtro-costo-estadia" id="filtro-costo-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-habitacion-estadia">Habitacion:</label>
+                            <input type="number" name="filtro-habitacion-estadia" id="filtro-habitacion-estadia">
+                        </div>
+
+                        <!-- Elementos NO encapsulados -->
+                        <input type="hidden" name="form" value="tabla-estadia">
                         <button class="btn-buscar" type="submit">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                     </div>
                 </form>
                 
                 <div class="table-container">
-                    <table class="tabla-huespedes">
-                        <thead>
+                    <table class="tabla-huespedes table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>ID</th>
-                                <th>Inicio</th>
-                                <th>FIN</th>
-                                <th>Registrado</th>
-                                <th>Costo</th>
-                                <th>Habitacion</th>
-                                <th>Acciones</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Inicio</th>
+                                <th scope="col">FIN</th>
+                                <th scope="col">Registrado</th>
+                                <th scope="col">Costo</th>
+                                <th scope="col">Habitacion</th>
+                                <th scope="col">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="registros-estadia">
@@ -629,226 +665,68 @@ $conn = conectarDB();
             </div>
         </section>
     </div>   
-    
-    
-        <section class="seccion" id="tarifas">
-    <div class="title-section">
-        <h2>Tarifas del Hotel</h2>
-    </div>
-    <div class="d-flex justify-content-end mb-2">
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRegistrar">
-    Nueva Tarifa
-  </button>
-</div>
-    <div class="content-section">
-        <div class="filter">
-            <p>Filtrar por:</p>
-            <div>
-                <label for="filtro-habitaciones">Tipo de Habitación:</label>
-                <select id="filtro-habitaciones" name="habitaciones">
-                    <option value="">Seleccione una opción...</option>
-                    <option value="1">Habitación Económica</option>
-                    <option value="2">Habitación Individual</option>
-                    <option value="3">Habitación Doble</option>
-                    <option value="4">Habitación Familiar</option>
-                    <option value="5">Habitación Estándar</option>
-                    <option value="6">Habitación Matrimonial</option>
-                    <option value="7">Habitación Triple</option>
-                    <option value="8">Suite Junior </option>
-                    <option value="9">Suite Ejecutiva</option>
-                </select>
-                
-                <label for="filtro-capacidad">Capacidad:</label>
-                <select id="filtro-capacidad" name="capacidad">
-                    <option value="">Seleccione una opción...</option>
-                    <option value="1">1 Persona</option>
-                    <option value="2">2 Personas</option>
-                    <option value="3">3 Personas</option>
-                    <option value="4">4 Personas</option>
-                    <option value="5">5 o más</option>
-                </select>
-                
-                <button class="btn btn-success">Buscar</button>
-                <button class="btn btn-secondary">Limpiar</button>
-
-            </div>
-        </div>
-
-        <div class="table-container">
-            <table class="tabla-tarifas">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tipo de Habitación</th>
-                        <th>Capacidad</th>
-                        <th>Precio por Noche</th>
-                        <th>Descripción</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="tarifa">
-                    <?php 
-                    $tarifas = mysqli_query($conn, "SELECT * FROM tarifa ORDER BY idTARIFA DESC LIMIT 15");
-                    while($fila = mysqli_fetch_assoc($tarifas)){
-                    ?> 
+    <section class="seccion" id="tarifas">
+        <div class="title-section"><h2>Tarifas</h2></div>
+        <div class="content-section">
+            <form class="filter filter-pagos">
                     
-                        <tr>
-                            <td><?=$fila["idTARIFA"]?></td>
-                            <td><?=$fila["TIPOHABITACIONES"]?></td>
-                            <td><?=$fila["CAPACIDAD"]?></td>
-                            <td>$<?=number_format($fila["PRECIOPORNOCHE"], 0, ',', '.')?></td>
-                            <td><?=$fila["DESCRIPCION"]?></td>
+                    <div class="filter-inputs">
 
-                            <td>
-                                <button
-                                 class="btn btn-primary btn-sm" 
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#modalEditar<?=$fila['idTARIFA']?>"
-                                >
-                                  Editar
-                                </button>
-                                <button 
-                                 class="btn btn-danger btn-sm" 
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#modalEliminar<?=$fila['idTARIFA']?>"
-                                >
-                                  Eliminar
-                                </button>
-                            </td>
+                        <div class="filter-group">
+                            <label for="id-pago">ID:</label>
+                            <input type="number" id="id-pago" class="filter-ID" name="id-pago" placeholder="0"> 
 
-                        </tr>
-                    <?php
-                    }
-                    ?>
+                        </div>
+                        <div class="filter-group">
+                            <label for="monto-pago">Monto:</label>
+                            <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
 
-                        <!-- Modal Registrar -->
-<div class="modal fade" id="modalRegistrar" tabindex="-1" aria-labelledby="registrarLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/php/registrar_tarifa.php" method="POST">
-        <div class="modal-header">
-          <h5 class="modal-title" id="registrarLabel">Registrar Nueva Tarifa</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="filter-group">
+                            <label for="fecha-inicio-pago">fecha inicio:</label>
+                            <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="fecha-fin-pago">Fecha fin:</label>
+                        <input type="date" id="fecha-fin-pago" name="fecha-fin-pago" placeholder=""> 
+                        </div>
+                        <div class="filter-group">
+                            <label for="huesped-pago">Huesped:</label>
+                            <input type="text" id="huesped-pago" name="huesped-pago" placeholder="">
+                        </div>
+                        <input type="hidden" name="form" value="tabla-pagos">
+                    </div>
+                    <button class="btn-buscar" type="submit">Buscar</button>
+                    </form>
         </div>
-        <div class="modal-body">
+    
+    </section>
+    <section  class="seccion" id="cancelaciones">
 
-          <div class="mb-3">
-            <label class="form-label">Tipo de Habitación</label>
-            <input type="text" name="TIPOHABITACIONES" class="form-control" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Capacidad</label>
-            <input type="text" name="CAPACIDAD" class="form-control" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Precio por Noche</label>
-            <input type="number" name="PRECIOPORNOCHE" class="form-control" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <textarea name="DESCRIPCION" class="form-control" required></textarea>
-          </div>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success">Registrar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-                        <!-- Modal Editar -->
-<div class="modal fade" id="modalEditar<?=$fila['idTARIFA']?>" tabindex="-1" aria-labelledby="editarLabel<?=$fila['idTARIFA']?>" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/php/editar_tarifa.php " method="POST">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editarLabel<?=$fila['idTARIFAS']?>">Editar Tarifa</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-            <input type="hidden" name="id" value="<?=$fila['idTARIFA']?>">
-
-            <div class="mb-3">
-                <label class="form-label">Tipo de Habitación</label>
-                <input type="text" name="TIPOHABITACIONES" class="form-control" value="<?=$fila['TIPOHABITACIONES']?>">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Capacidad</label>
-                <input type="text" name="CAPACIDAD" class="form-control" value="<?=$fila['CAPACIDAD']?>">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Precio por Noche</label>
-                <input type="number" name="PRECIOPORNOCHE" class="form-control" value="<?=$fila['PRECIOPORNOCHE']?>">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Descripción</label>
-                <textarea name="DESCRIPCION" class="form-control"><?=$fila['DESCRIPCION']?></textarea>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Eliminar -->
-<div class="modal fade" id="modalEliminar<?=$fila['idTARIFA']?>" tabindex="-1" aria-labelledby="eliminarLabel<?=$fila['idTARIFA']?>" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/php/eliminar_tarifa.php" method="POST">
-        <div class="modal-header">
-          <h5 class="modal-title" id="eliminarLabel<?=$fila['idTARIFA']?>">Eliminar Tarifa</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" name="id" value="<?=$fila['idTARIFA']?>">
-          <p>¿Estás seguro de que deseas eliminar la tarifa <strong>#<?=$fila['idTARIFA']?></strong>?</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-danger">Eliminar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-
+        <div class="title-section"><h2>Cancelaciones</h2></div>
+        <div class="content-section">
             
-                    
-                    
-                    
-                </tbody>
-            </table>
+
+
+
         </div>
-    </div>
-</section>
 
+    </section>
+    
     <?php
-    if(isset($_GET['section'])){
+        if(isset($_GET['section'])){
 
-        $section=$_GET['section'];
-        echo "<script>
-        
-        var GET='$section'
+            $section=$_GET['section'];
+            echo "<script>
+            
+            var GET='$section'
 
-    </script>";
-    }
-    else{
-        echo '<script>var GET= false</script>';
-    }
+        </script>";
+        }
+        else{
+            echo '<script>var GET= false</script>';
+        }
     ?>
 
     <script src="script.js?v=<?php echo time(); ?>"></script>
@@ -856,7 +734,5 @@ $conn = conectarDB();
     <script src="js/habitaciones_acciones.js?v=<?php echo time(); ?>"></script>
         <!-- Usando CDN de jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-
 </body>
 </html>
