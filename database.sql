@@ -172,21 +172,16 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 -- Table `mydb`.`tarifa`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`tarifa` (
-  `idTARIFA` INT NOT NULL AUTO_INCREMENT,
-  `MODALIDA` VARCHAR(50) NULL DEFAULT NULL,
-  `NROHUESPEDES` INT NULL DEFAULT NULL,
-  `VALOR` DOUBLE NULL DEFAULT NULL,
-  `HABITACIONES_idHABITACIONES` INT NOT NULL,
-  
-  PRIMARY KEY (`idTARIFA`),
-  INDEX `fk_TARIFA_HABITACIONES_idx` (`HABITACIONES_idHABITACIONES` ASC),
-  CONSTRAINT `fk_TARIFA_HABITACIONES`
-    FOREIGN KEY (`HABITACIONES_idHABITACIONES`)
-    REFERENCES `mydb`.`habitaciones` (`idHABITACIONES`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
-
+CREATE TABLE IF NOT EXISTS `mydb`.` tarifas` (
+  idTARIFAS INT AUTO_INCREMENT PRIMARY KEY,
+  HABITACIONES_idHABITACIONES INT NOT NULL,
+  CAPACIDAD INT NOT NULL,
+  PRECIOPORNOCHE DECIMAL(10, 2) NOT NULL,
+  DESCRIPCION TEXT,
+  FOREIGN KEY (HABITACIONES_idHABITACIONES) REFERENCES habitaciones(idHABITACIONES)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
 -- -----------------------------------------------------
 -- Table `mydb`.`servicios`
 -- -----------------------------------------------------
@@ -197,7 +192,23 @@ CREATE TABLE IF NOT EXISTS `mydb`. `servicios` (
     IMAGEN VARCHAR(255)
 );
 
+CREATE TABLE IF NOT EXISTS `mydb`. `informes` (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100),
+    fecha_checkin DATE,
+    fecha_checkout DATE,
+    tipo_habitacion VARCHAR(50),
+    noches INT,
+    desayuno INT DEFAULT 0,
+    spa INT DEFAULT 0,
+    total INT
+);
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+USE mydb;
+SELECT * FROM tarifas;
+DROP TABLE tarifas;

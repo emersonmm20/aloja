@@ -1,9 +1,12 @@
-<?php 
-include "config/conexion.php";
-// include "php/filter_table.php";
+<?php
 
-$conn = conectarDB();
+include 'config/conexion.php'; 
 
+session_start();
+if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
+    echo "<script>alert('Acceso denegado'); window.location.href='principal.php';</script>";
+    exit();
+}
 ?>
 
 
@@ -20,6 +23,7 @@ $conn = conectarDB();
     <link rel="stylesheet" href="style.css?v=<?php echo(rand()); ?>" />
 </head>
 <body>
+
 <header>
         
         <h1>ALOJA</h1>
@@ -95,54 +99,24 @@ $conn = conectarDB();
                         
                     </ul>
                 </li>
+  
+                <li class="nav-item"><a href="principal.php" class="nav-link text-white">Página principal</a></li>
+
+            </ul>
         </nav>
 </header>
     
     <div class="container">
         <section class="seccion" id="inicio">
                 <div class="title-section">
-                    <h2 class="inicio">Bienvenidos</h2>
+                    <h2 class="inicio">Bienvenido <?php echo $_SESSION['usuario'] ?? 'Usuario'; ?></h2>
                 </div>
 
                 <div>
-                    <h2 class="bajar-texto">Página del Administrador</h2>
+                    <h2 class="bajar-texto">Panel del Administrador</h2>
                 </div>
 
-                <!-- <div class="buscador">
-                    <div class="campo">
-                    <label><i class="fa-solid fa-calendar-days"></i> Check in</label>
-                    <input type="date">
-                    </div>
-                    <div class="campo">
-                    <label><i class="fa-solid fa-calendar-days"></i> Check out</label>
-                    <input type="date">
-                    </div>
-                    <div class="campo">
-                    <label><i class="fa-solid fa-user"></i> Personas</label>
-                    <div class="contador">
-                        <button onclick="cambiar('personas', -1)">−</button>
-                        <input id="personas" type="number" value="1" min="1">
-                        <button onclick="cambiar('personas', 1)">+</button>
-                    </div>
-                    </div>
-                    <div class="campo">
-                    <label><i class="fa-solid fa-bed"></i> Camas</label>
-                    <div class="contador">
-                        <button onclick="cambiar('camas', -1)">−</button>
-                        <input id="camas" type="number" value="1" min="0">
-                        <button onclick="cambiar('camas', 1)">+</button>
-                    </div>
-                    </div>
-                    <div class="campo">
-                    <label><i class="fa-solid fa-toilet"></i> Baños</label>
-                    <div class="contador">
-                        <button onclick="cambiar('banos', -1)">−</button>
-                        <input id="banos" type="number" value="1" min="0">
-                        <button onclick="cambiar('banos', 1)">+</button>
-                    </div>
-                    </div>
-                    <button class="buscar-btn">Buscar</button>
-                </div> -->
+            
                 
         </section>
         
@@ -626,212 +600,224 @@ $conn = conectarDB();
             </div>
         </section>
     </div>   
-    
-    
-        <section class="seccion" id="tarifas">
-    <div class="title-section">
-        <h2>Tarifas del Hotel</h2>
-    </div>
-    <div class="d-flex justify-content-end mb-2">
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRegistrar">
-    Nueva Tarifa
-  </button>
-</div>
-    <div class="content-section">
-        <div class="filter">
-            <p>Filtrar por:</p>
-            <div>
-                <label for="filtro-habitaciones">Tipo de Habitación:</label>
-                <select id="filtro-habitaciones" name="habitaciones">
-                    <option value="">Seleccione una opción...</option>
-                    <option value="1">Habitación Económica</option>
-                    <option value="2">Habitación Individual</option>
-                    <option value="3">Habitación Doble</option>
-                    <option value="4">Habitación Familiar</option>
-                    <option value="5">Habitación Estándar</option>
-                    <option value="6">Habitación Matrimonial</option>
-                    <option value="7">Habitación Triple</option>
-                    <option value="8">Suite Junior </option>
-                    <option value="9">Suite Ejecutiva</option>
-                </select>
-                
-                <label for="filtro-capacidad">Capacidad:</label>
-                <select id="filtro-capacidad" name="capacidad">
-                    <option value="">Seleccione una opción...</option>
-                    <option value="1">1 Persona</option>
-                    <option value="2">2 Personas</option>
-                    <option value="3">3 Personas</option>
-                    <option value="4">4 Personas</option>
-                    <option value="5">5 o más</option>
-                </select>
-                
-                <button class="btn btn-success">Buscar</button>
-                <button class="btn btn-secondary">Limpiar</button>
 
+      <section class="seccion" id="registro">
+            <div class="title-section mb-4">
+                <h2>Cancelaciones y Reembolsos</h2>
             </div>
-        </div>
 
-        <div class="table-container">
-            <table class="tabla-tarifas">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tipo de Habitación</th>
-                        <th>Capacidad</th>
-                        <th>Precio por Noche</th>
-                        <th>Descripción</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="tarifa">
-                    <?php 
-                    $tarifas = mysqli_query($conn, "SELECT * FROM tarifa ORDER BY idTARIFA DESC LIMIT 15");
-                    while($fila = mysqli_fetch_assoc($tarifas)){
-                    ?> 
-                    
-                        <tr>
-                            <td><?=$fila["idTARIFA"]?></td>
-                            <td><?=$fila["TIPOHABITACIONES"]?></td>
-                            <td><?=$fila["CAPACIDAD"]?></td>
-                            <td>$<?=number_format($fila["PRECIOPORNOCHE"], 0, ',', '.')?></td>
-                            <td><?=$fila["DESCRIPCION"]?></td>
-
-                            <td>
-                                <button
-                                 class="btn btn-primary btn-sm" 
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#modalEditar<?=$fila['idTARIFA']?>"
-                                >
-                                  Editar
-                                </button>
-                                <button 
-                                 class="btn btn-danger btn-sm" 
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#modalEliminar<?=$fila['idTARIFA']?>"
-                                >
-                                  Eliminar
-                                </button>
-                            </td>
-
-                        </tr>
-                    <?php
-                    }
-                    ?>
-
-                        <!-- Modal Registrar -->
-<div class="modal fade" id="modalRegistrar" tabindex="-1" aria-labelledby="registrarLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/php/registrar_tarifa.php" method="POST">
-        <div class="modal-header">
-          <h5 class="modal-title" id="registrarLabel">Registrar Nueva Tarifa</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-
-          <div class="mb-3">
-            <label class="form-label">Tipo de Habitación</label>
-            <input type="text" name="TIPOHABITACIONES" class="form-control" required>
+           <div class="">
+             <a href="php/crear_cancelacion.php" class="btn btn-primary mb-3">Nueva Cancelación</a>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Capacidad</label>
-            <input type="text" name="CAPACIDAD" class="form-control" required>
-          </div>
+          <div class="content-section">
+                 <!-- Filtro -->
+          <div class="filter">
+           <p>Filtrar por:</p>
+          <div>
+          <label for="filtro-id">Id:</label>
+         <input type="text" id="filtro-id" placeholder="Buscar por id">
+  
+          <label for="filtro-estado">Estado:</label>
+          <select class="form-select" id="filtro-estado">
+         <option value="">Todos</option>
+         <option value="Pendiente">Pendiente</option>
+         <option value="Aprobado">Aprobado</option>
+         <option value="Rechazado">Rechazado</option>
+        </select>
 
-          <div class="mb-3">
-            <label class="form-label">Precio por Noche</label>
-            <input type="number" name="PRECIOPORNOCHE" class="form-control" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <textarea name="DESCRIPCION" class="form-control" required></textarea>
-          </div>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success">Registrar</button>
-        </div>
-      </form>
+      <button class="btn-buscar">Buscar</button>
+      <button class="btn-limpiar">Limpiar</button>
     </div>
   </div>
-</div>
 
-                        <!-- Modal Editar -->
-<div class="modal fade" id="modalEditar<?=$fila['idTARIFA']?>" tabindex="-1" aria-labelledby="editarLabel<?=$fila['idTARIFA']?>" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/php/editar_tarifa.php " method="POST">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editarLabel<?=$fila['idTARIFAS']?>">Editar Tarifa</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-            <input type="hidden" name="id" value="<?=$fila['idTARIFA']?>">
-
-            <div class="mb-3">
-                <label class="form-label">Tipo de Habitación</label>
-                <input type="text" name="TIPOHABITACIONES" class="form-control" value="<?=$fila['TIPOHABITACIONES']?>">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Capacidad</label>
-                <input type="text" name="CAPACIDAD" class="form-control" value="<?=$fila['CAPACIDAD']?>">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Precio por Noche</label>
-                <input type="number" name="PRECIOPORNOCHE" class="form-control" value="<?=$fila['PRECIOPORNOCHE']?>">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Descripción</label>
-                <textarea name="DESCRIPCION" class="form-control"><?=$fila['DESCRIPCION']?></textarea>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-        </div>
-      </form>
-    </div>
+  <!-- Tabla -->
+  <div class="table-container">
+    <table class="table-cancelacion">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Estadía</th>
+          <th>Huésped</th>
+          <th>Fecha Cancelación</th>
+          <th>Motivo</th>
+          <th>Reembolso (%)</th>
+          <th>Monto</th>
+          <th>Estado</th>
+          <th>Observaciones</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php 
+          $cancelacion = mysqli_query($conn,
+            "SELECT 
+              c.idCANCELACION, 
+              c.idESTADIA, 
+              h.NOMBRECOMPLETO AS idHUESPED, 
+              c.FECHACANCELACION, 
+              c.MOTIVOCANCELACION, 
+              c.PORCENTAJEREEMBOLSO, 
+              c.MONTOREEMBOLSADO, 
+              c.ESTADO, 
+              c.OBSERVACIONES 
+            FROM cancelacion AS c
+            INNER JOIN estadia AS e ON c.idESTADIA = e.idESTADIA 
+            INNER JOIN huesped AS h ON e.idHUESPED = h.idHUESPED
+            ORDER BY c.idCANCELACION DESC LIMIT 15"
+          );
+          while($fila = mysqli_fetch_assoc($cancelacion)):
+        ?>
+        <tr>
+          <td><?= $fila["idCANCELACION"] ?></td>
+          <td><?= $fila["idESTADIA"] ?></td>
+          <td><?= $fila["idHUESPED"] ?></td>
+          <td><?= $fila["FECHACANCELACION"] ?></td>
+          <td><?= $fila["MOTIVOCANCELACION"] ?></td>
+          <td><?= $fila["PORCENTAJEREEMBOLSO"] ?>%</td>
+          <td>$<?= number_format($fila["MONTOREEMBOLSADO"], 0, ',', '.') ?></td>
+          <td><?= $fila["ESTADO"] ?></td>
+          <td><?= $fila["OBSERVACIONES"] ?></td>
+          <td>
+            <a href="php/editar_cancelacion.php?id=<?= $fila['idCANCELACION'] ?>" class="btn btn-sm btn-warning">Editar</a>
+            <a href="php/eliminar_cancelacion.php?id=<?= $fila['idCANCELACION'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que deseas eliminar esta cancelación?');">Eliminar</a>
+          </td>
+        </tr>
+        <?php endwhile; ?>
+      </tbody>
+    </table>
   </div>
+
 </div>
 
-<!-- Modal Eliminar -->
-<div class="modal fade" id="modalEliminar<?=$fila['idTARIFA']?>" tabindex="-1" aria-labelledby="eliminarLabel<?=$fila['idTARIFA']?>" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/php/eliminar_tarifa.php" method="POST">
-        <div class="modal-header">
-          <h5 class="modal-title" id="eliminarLabel<?=$fila['idTARIFA']?>">Eliminar Tarifa</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" name="id" value="<?=$fila['idTARIFA']?>">
-          <p>¿Estás seguro de que deseas eliminar la tarifa <strong>#<?=$fila['idTARIFA']?></strong>?</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-danger">Eliminar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-
-            
-                    
-                    
-                    
-                </tbody>
-            </table>
-        </div>
-    </div>
+      
 </section>
+
+ <section class="seccion" id="tarifas">
+  <h2 class="mb-4">Tarifas del hotel</h2>
+
+  <a href="php/crear_tarifa.php" class="btn btn-primary mb-3">Nueva Tarifa</a>
+
+  <div class="content-section">
+    <div class="filter">
+    <h5>Filtrar por:</h5>
+    <div>
+      <div class="col-md-4">
+        <label for="filtro-habitaciones" class="form-label">Tipo de Habitación:</label>
+        <select id="filtro-habitaciones" class="form-select">
+          <option value="">Seleccione una opción...</option>
+          <option value="1">Habitación Económica</option>
+          <option value="2">Habitación Individual</option>
+          <option value="3">Habitación Doble</option>
+          <option value="4">Habitación Familiar</option>
+          <option value="5">Habitación Estándar</option>
+          <option value="6">Habitación Matrimonial</option>
+          <option value="7">Habitación Triple</option>
+          <option value="8">Suite Junior</option>
+          <option value="9">Suite Ejecutiva</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="filtro-capacidad" class="form-label">Capacidad:</label>
+        <select id="filtro-capacidad" class="form-select">
+          <option value="">Seleccione una opción...</option>
+          <option value="1">1 Persona</option>
+          <option value="2">2 Personas</option>
+          <option value="3">3 Personas</option>
+          <option value="4">4 Personas</option>
+          <option value="5">5 o más</option>
+        </select>
+      </div>
+      <div class="col-md-4 d-flex align-items-end gap-2">
+        <button class="btn btn-success">Buscar</button>
+        <button class="btn btn-secondary">Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="table-tarifas">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Habitaciónes</th>
+          <th>Capacidad</th>
+          <th>Precio por Noche</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="tarifas">
+        <?php 
+          $tarifas = mysqli_query($conn, "SELECT * FROM tarifas ORDER BY idTARIFAS DESC LIMIT 15");
+          while($fila = mysqli_fetch_assoc($tarifas)){
+        ?>
+          <tr>
+            <td><?= $fila["idTARIFAS"] ?></td>
+            <td><?= $fila["HABITACIONES"] ?></td>
+            <td><?= $fila["CAPACIDAD"] ?></td>
+            <td>$<?= number_format($fila["PRECIOPORNOCHE"], 0, ',', '.') ?></td>
+            <td><?= $fila["DESCRIPCION"] ?></td>
+            <td>
+              <a href="php/editar_tarifa.php?id=<?= $fila['idTARIFAS'] ?>" class="btn btn-warning btn-sm">Editar</a>
+              <a href="php/eliminar_tarifa.php?id=<?= $fila['idTARIFAS'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta tarifa?')">Eliminar</a>
+            </td>
+          </tr>
+        <?php } ?>
+      </tbody>
+    </table>
+  </div>
+  </div>
+</section>
+
+<section class="seccion" id="generar">
+  <h2 class="mb-4">Informes de Clientes</h2>
+
+  <a href="php/crear_informe.php" class="btn btn-primary mb-3">Nuevo Informe</a>
+
+  <div class="content-section">
+    <!-- Opcional: Aquí podrías agregar filtros como en el ejemplo de tarifas -->
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>Habitación</th>
+            <th>Noches</th>
+            <th>Servicios</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php while ($fila = $resultado->fetch_assoc()) { ?>
+            <tr>
+              <td><?= $fila['nombre'] ?></td>
+              <td><?= $fila['fecha_checkin'] ?></td>
+              <td><?= $fila['fecha_checkout'] ?></td>
+              <td><?= $fila['tipo_habitacion'] ?></td>
+              <td><?= $fila['noches'] ?></td>
+              <td>
+                <?php if ($fila['desayuno']) echo "Desayuno<br>"; ?>
+                <?php if ($fila['spa']) echo "Spa"; ?>
+              </td>
+              <td>$<?= number_format($fila['total'], 0, ',', '.') ?></td>
+              <td>
+                <a href="php/editar_informe.php?id=<?= $fila['id'] ?>" class="btn btn-info btn-sm">Editar</a>
+                <a href="php/eliminar_informe.php?id=<?= $fila['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este informe?')">Eliminar</a>
+              </td>
+            </tr>
+          <?php } ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+ 
 
     <?php
     if(isset($_GET['section'])){
@@ -848,9 +834,38 @@ $conn = conectarDB();
     }
     ?>
 
+
     <script src="script.js?v=<?php echo time(); ?>"></script>
     <script src="js/filtro.js?v=<?php echo time(); ?>"></script>
     <script src="js/habitaciones_acciones.js?v=<?php echo time(); ?>"></script>
+     <!-- Cerrar sesión -->
+    <script>
+        function confirmarCerrarSesion() {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¿Deseas cerrar sesión?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, salir',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'logout.php';
+                }
+            });
+        }
+
+        document.getElementById('cerrarSesion').addEventListener('click', function (e) {
+            e.preventDefault();
+            confirmarCerrarSesion();
+        });
+
+        document.getElementById('cerrarSesion2').addEventListener('click', function (e) {
+            e.preventDefault();
+            confirmarCerrarSesion();
+        });
+    </script>
     
 
 </body>

@@ -136,14 +136,16 @@ section .content-section{
     background-color: #ffffff99;
     color: black;
     overflow-y: scroll;
-    position: absolute;
+    position: relative;
     bottom: 0;
     width: 100%;
+    padding-top: 100px;
 }
 section .content-section > div{
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+    
 
 }
 section .content-section > div img{

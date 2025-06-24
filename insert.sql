@@ -11,7 +11,10 @@ INSERT INTO `mydb`.`habitaciones` (`NUMERO`, `CAPACIDAD`, `ESTADO`) VALUES
 (10, 6, 'FUERA_DE_SERVICIO');
 
 
-INSERT INTO `empleado` (`idEMPLEADO`, `NOMBRE_COMPLETO`, `USUARIO`, `PASSWORD`, `ROL`)
-VALUES (NULL, 'ADMIN', 'ADMIN', 'ADMIN123', 'ADMIN');
+INSERT INTO `mydb`.`EMPLEADO`  (NOMBRE_COMPLETO, USUARIO, PASSWORD, ROL) 
+VALUES 
+('Juan Pérez', 'admin123', 'Admin-111', 'ADMIN'),
+('María Gómez', 'empleado123', 'Empleado-111', 'EMPLEADO');
+
 
 
