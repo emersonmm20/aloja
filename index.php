@@ -1,6 +1,7 @@
 <?php
 
 include 'config/conexion.php'; 
+$conn = conectarDB();
 
 session_start();
 if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
