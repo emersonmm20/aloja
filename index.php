@@ -14,12 +14,13 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
 <html lang="es">
 <head>
     
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin AloJa</title>
     <link href="https://fonts.googleapis.com/css2?family=Rammetto+One&display=swap" rel="stylesheet"> 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css?v=<?php echo(rand()); ?>" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js?v=<?php echo(rand()); ?>" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css?v=<?php echo(rand()); ?>" />
 </head>
 <body>
@@ -43,7 +44,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
                 </li>
                 
 
-                <li><a >Gestón de Portafolio</a>
+                <li><a >Portafolio</a>
                     <ul>
                         <li><a  class="select-section-button">Servicios y Alojamientos</a></li>
                         </li> 
@@ -71,14 +72,11 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
 
                 
 
-                <li><a >Cancelación y Reembolsos</a>
-                    <ul>
-                        <li><a  class="select-section-button">Registro</a></li>
-                        
-                    </ul>
+                <li><a  class="select-section-button">Cancelaciones</a>
+                    
                 </li>
 
-                <li><a >Usuarios y Roles</a>
+                <li><a >Usuarios</a>
                     <ul>
                         <li><a  class="select-section-button">Lista de Usuarios</a></li>
                         
@@ -86,18 +84,14 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
                 </li>
 
 
-                <li><a >Informes y Reportes</a>
+                <li><a >Informes</a>
                     <ul>
                         <li><a  class="select-section-button">Generar</a></li>
                         
                     </ul>
                 </li>
 
-                <li><a >Tarifas del Hotel</a>
-                    <ul>
-                        <li><a  class="select-section-button">Tarifas</a></li>
-                        
-                    </ul>
+                <li><a  class="select-section-button">Tarifas</a>
                 </li>
   
                 <li class="nav-item"><a href="principal.php" class="nav-link text-white">Página principal</a></li>
@@ -106,7 +100,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
         </nav>
 </header>
     
-    <div class="container">
+    <div class="content">
         <section class="seccion" id="inicio">
                 <div class="title-section">
                     <h2 class="inicio">Bienvenido <?php echo $_SESSION['usuario'] ?? 'Usuario'; ?></h2>
@@ -189,22 +183,22 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
         </section>
 
         <section class="seccion text-start " id="servicios-y-alojamientos">
-            <div class="content-section">
+            <div class="title-section">
                 <h2>Servicios y Alojamientos</h2>
 
-                <div class="d-flex justify-content-end mb-2">
-                    <a href="./php/crear_servicio.php" class="btn btn-primary">Crear Servicio</a>
-                </div>
+            </div>
+            <div class="content-section">
+
+                <a href="./php/crear_servicio.php" class="crear-servicio-button btn btn-primary btn-lg btn-block bg-success">Crear Servicio</a>
                 
-                <table class="table-container">
-                    <thead class="table-servicios">
-                        
+                <table class="table-container table">
+                    <thead class="table-servicios thead-dark">
                      <tr>
-                        <th>Servicio</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th>Imagen</th>
-                        <th>Acciones</th>
+                        <th scope="col">Servicio</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Acciones</th>
                      </tr>
                    </thead>
                 
@@ -242,44 +236,57 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
                 
                 </table>
             </div>
-       </section>
+        </section>
 
         <section class="seccion" id="historial-de-pagos">
             <div class="title-section">
                 <h2>Historial de Pagos</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
-                    <p>Filtrar por:</p>
+                <form class="filter filter-pagos">
+                    
                     <div class="filter-inputs">
 
-                        <!-- ID, MONTO, Fecha, huesped, estadia -->
-                        <label for="filtro-servicio-pago">ID:</label>
-                        <input type="number" id="filtro-servicio-pago" class="filter-ID" name="filtro-servicio-pago" placeholder="0"> 
-                        <label for="monto-pago">Monto:</label>
-                        <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
-                        <label for="fecha-inicio-pago">fecha inicio:</label>
-                        <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
-                        <label for="fecha-fin-pago">Fecha fin:</label>
+                        <div class="filter-group">
+                            <label for="id-pago">ID:</label>
+                            <input type="number" id="id-pago" class="filter-ID" name="id-pago" placeholder="0"> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="monto-pago">Monto:</label>
+                            <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="fecha-inicio-pago">fecha inicio:</label>
+                            <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="fecha-fin-pago">Fecha fin:</label>
                         <input type="date" id="fecha-fin-pago" name="fecha-fin-pago" placeholder=""> 
-                        <label for="huesped-pago">Huesped:</label>
-                        <input type="number" id="huesped-pago" name="huesped-pago" placeholder=""> 
+                        </div>
+                        <div class="filter-group">
+                            <label for="huesped-pago">Huesped:</label>
+                            <input type="text" id="huesped-pago" name="huesped-pago" placeholder="">
+                        </div>
+                        <input type="hidden" name="form" value="tabla-pagos">
                     </div>
-                    <button onclick="" class="btn-buscar" value="registros-pagos,pagos,filtro-servicio-pago,monto-pago,fecha-inicio-pago,fecha-fin-pago,huesped-pago,id-estadia-pago">Buscar</button>
-                </div>
+                    <button class="btn-buscar" type="submit">Buscar</button>
+                    </form>
 
                 <div class="table-container">
-                    <table class="tabla-pagos">
-                        <thead>
+                    <table class="tabla-pagos table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>ID Pago</th>
-                                <th>Monto</th>
-                                <th>FECHA DE PAGO</th>
-                                <th>Huesped</th>
-                                <th>id Estadia</th>
-                                <th>Empleado</th>
+                                <th scope="col">ID Pago</th>
+                                <th scope="col">Monto</th>
+                                <th scope="col">FECHA DE PAGO</th>
+                                <th scope="col">Huesped</th>
+                                <th scope="col">id Estadia</th>
+                                <th scope="col">Empleado</th>
                                 
-                                <th>Acciones</th>
+                                <th scope="col">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="registros-pagos">
@@ -326,42 +333,50 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
                 <h2>Administrar habitaciones</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
-                    <p>Filtrar por:</p>
+                <form class="filter">
                     <div class="filter-inputs">
+                        <div class="filter-group">
+                            <label for="filtro-id-habitaciones">ID:</label>
+                            <input type="number" id="filtro-id-habitaciones" class="filter-ID" name="filtro-id-habitaciones" placeholder="">
+                        </div>
 
-                        <!-- ID, MONTO, Fecha, huesped, estadia -->
-                        <label for="filtro-id-habitaciones">ID:</label>
-                        <input type="number" id="filtro-id-habitaciones" class="filter-ID" name="filtro-id-habitaciones" placeholder=""> 
+                        <div class="filter-group">
+                            <label for="filtro-numero-habitaciones">Monto:</label>
+                            <input type="number" id="filtro-numero-habitaciones" name="filtro-numero-habitaciones" placeholder="">
+                        </div>
 
-                        <label for="filtro-numero-habitaciones">Monto:</label>
-                        <input type="number" id="filtro-numero-habitaciones" name="filtro-numero-habitaciones" placeholder=""> 
+                        <div class="filter-group">
+                            <label for="filtro-capacidad-habitaciones">fecha inicio:</label>
+                            <input type="number" id="filtro-capacidad-habitaciones" name="filtro-capacidad-habitaciones" placeholder="">
+                        </div>
 
-                        <label for="filtro-capacidad-habitaciones">fecha inicio:</label>
-                        <input type="number" id="filtro-capacidad-habitaciones" name="filtro-capacidad-habitaciones" placeholder=""> 
+                        <div class="filter-group">
+                            <label for="filtro-estado-habitaciones">Fecha fin:</label>
+                            <select name="filtro-estado-habitaciones" id="filtro-estado-habitaciones">
+                                <option value="">Seleccionar estado</option>
+                                <!-- ENUM('OCUPADA', 'DESOCUPADA', 'FUERA_DE_SERVICIO') -->
+                                <option value="OCUPADA">Ocupada</option>
+                                <option value="DESOCUPADA">Desocupada</option>
+                                <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
+                            </select>
+                        </div>
 
-                        <label for="filtro-estado-habitaciones">Fecha fin:</label>
-                        <select name="filtro-estado-habitaciones" id="filtro-estado-habitaciones">
-                            <option value="">Seleccionar estado</option>
-                            <!-- ENUM('OCUPADA', 'DESOCUPADA', 'FUERA_DE_SERVICIO') -->
-                            <option value="OCUPADA">Ocupada</option>
-                            <option value="DESOCUPADA">Desocupada</option>
-                            <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
-                        </select>
-
+                        <!-- Elementos NO encapsulados -->
+                        <input type="hidden" value="tabla-habitaciones" name="form">
+                        <button class="btn-buscar" type="submit">Buscar</button>
+                        <button>Agregar habitacion</button>
                     </div>
-                    <button class="btn-buscar" >Buscar</button>
-                    <button>Agregar habitacion</button>
-                </div>
+                </form>
+            
                 
                 <div class="table-container">
-                    <table class="tabla-pagos">
-                        <thead>
+                    <table class="tabla-pagos table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>Numero</th>
-                                <th>Capacidad</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
+                                <th scope="col">Numero</th>
+                                <th scope="col">Capacidad</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col" class="tabla-acciones">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="tabla-habitaciones">
@@ -380,17 +395,18 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
                                         class="btn-estado-habitacion"
                                         id=<?="cambiar-estado-boton-$id"?>
                                         value=<?=$id?> onclick=<?="mostrarSelectHabitaciones($id)"?> >Cambiar Estado</button>
-                                        <div id=<?="select-estado-habitacion-$id"?> class="select-estado-habitacion">
-                                            <select id=<?="nuevo-estado-habitacion-$id"?>>
+                                        <div id=<?="select-estado-habitacion-$id"?>
+                                             class="select-estado-habitacion rounded">
+                                            <select id=<?="nuevo-estado-habitacion-$id" ?> class="select-table">
                                                 <option value="">Selecciona Estado</option>
                                                 <option value="OCUPADA">Ocupada</option>
                                                 <option value="DESOCUPADA">Desocupada</option>
                                                 <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
                                             </select>
-                                            <button class="actualizar-estado-habitacion"
+                                            <button class="actualizar-estado-habitacion bg-success text-light btn btn-success"
                                             onclick=<?="enviarYActualizar($id)"?>
-                                            value=<?=$id?>>Actualizar</button>
-                                            <button class="cancelar-estado" value=<?=$id?>>X</button>
+                                            value=<?=$id?>>Modificar</button>
+                                            <button class="cancelar-estado btn btn-danger" value=<?=$id?>>X</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -414,39 +430,44 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
             <h2>Lista de Huéspedes</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
-                    <p>Filtrar por:</p>
+                <form class="filter">
                     <div>
-                        <label for="filtro-nombre">Nombre:</label>
-                        <input type="text" id="filtro-nombre" placeholder="Buscar por nombre">
-                        
-                        <label for="filtro-documento">Tipo Documento:</label>
-                        <select id="filtro-documento" name="tipo_documento" required>
-                            <option value="">Seleccione un tipo...</option>
-                            <option value="cedula-extranjeria">Cédula de Extranjería</option>
-                            <option value="cedula-identidad">Cédula de Identidad</option>
-                            <option value="pasaporte">Pasaporte</option>
-                            <option value="tarjeta-identidad">Tarjeta de Identidad</option>
-                            <option value="permiso-proteccion">Permiso por Protección Temporal</option>
-                        </select>
-                        
-                        <button class="btn-buscar">Buscar</button>
+                        <div class="filter-group">
+                            <label for="filtro-nombre">Nombre:</label>
+                            <input type="text" id="filtro-nombre" placeholder="Buscar por nombre">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-documento">Tipo Documento:</label>
+                            <select id="filtro-documento" name="tipo_documento" required>
+                                <option value="">Seleccione un tipo...</option>
+                                <option value="cedula-extranjeria">Cédula de Extranjería</option>
+                                <option value="cedula-identidad">Cédula de Identidad</option>
+                                <option value="pasaporte">Pasaporte</option>
+                                <option value="tarjeta-identidad">Tarjeta de Identidad</option>
+                                <option value="permiso-proteccion">Permiso por Protección Temporal</option>
+                            </select>
+                        </div>
+
+                        <!-- Elementos NO encapsulados -->
+                        <input type="hidden" name="form" value="tabla-huespedes">
+                        <button class="btn-buscar" type="submit">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                     </div>
-                </div>
+                </form>
                 
                 <div class="table-container">
-                    <table class="tabla-huespedes">
-                        <thead>
+                    <table class="tabla-huespedes table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>ID</th>
-                                <th>Nombre Completo</th>
-                                <th>Tipo Documento</th>
-                                <th>Numero Documento</th>
-                                <th>Teléfono</th>
-                                <th>Email</th>
-                                <th>Observaciones</th>
-                                <th>Acciones</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Nombre Completo</th>
+                                <th scope="col">Tipo Documento</th>
+                                <th scope="col">Numero Documento</th>
+                                <th scope="col">Teléfono</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Observaciones</th>
+                                <th scope="col">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla">
@@ -482,38 +503,56 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
             <h2>Estadias</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
-                    <p>Filtrar por:</p>
+                <form class="filter">
                     <div>
-                        <label for="filtro-id-estadia">ID:</label>
-                        <input type="number" name="filtro-id-estadia" class="filter-ID" id="filtro-id-estadia">
-                        <label for="filtro-inicio-estadia">Inicio:</label>
-                        <input type="date" name="filtro-inicio-estadia" id="filtro-inicio-estadia">
-                        <label for="filtro-fin-estadia">Fin:</label>
-                        <input type="date" name="filtro-fin-estadia" id="filtro-fin-estadia">
-                        <label for="filtro-registro-estadia">Registrado:</label>
-                        <input type="date" name="filtro-registro-estadia" id="filtro-registro-estadia">
-                        <label for="filtro-costo-estadia">Costo:</label>
-                        <input type="number" name="filtro-costo-estadia" id="filtro-costo-estadia">
-                        <label for="filtro-habitacion-estadia">Habitacion:</label>
-                        <input type="number" name="filtro-habitacion-estadia" id="filtro-habitacion-estadia">
-                        
-                        <button class="btn-buscar">Buscar</button>
+                        <div class="filter-group">
+                            <label for="filtro-id-estadia">ID:</label>
+                            <input type="number" name="filtro-id-estadia" class="filter-ID" id="filtro-id-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-inicio-estadia">Inicio:</label>
+                            <input type="date" name="filtro-inicio-estadia" id="filtro-inicio-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-fin-estadia">Fin:</label>
+                            <input type="date" name="filtro-fin-estadia" id="filtro-fin-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-registro-estadia">Registrado:</label>
+                            <input type="date" name="filtro-registro-estadia" id="filtro-registro-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-costo-estadia">Costo:</label>
+                            <input type="number" name="filtro-costo-estadia" id="filtro-costo-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-habitacion-estadia">Habitacion:</label>
+                            <input type="number" name="filtro-habitacion-estadia" id="filtro-habitacion-estadia">
+                        </div>
+
+                        <!-- Elementos NO encapsulados -->
+                        <input type="hidden" name="form" value="tabla-estadia">
+                        <button class="btn-buscar" type="submit">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                     </div>
-                </div>
+                </form>
                 
                 <div class="table-container">
-                    <table class="tabla-huespedes">
-                        <thead>
+                    <table class="tabla-huespedes table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>ID</th>
-                                <th>Inicio</th>
-                                <th>FIN</th>
-                                <th>Registrado</th>
-                                <th>Costo</th>
-                                <th>Habitacion</th>
-                                <th>Acciones</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Inicio</th>
+                                <th scope="col">FIN</th>
+                                <th scope="col">Registrado</th>
+                                <th scope="col">Costo</th>
+                                <th scope="col">Habitacion</th>
+                                <th scope="col">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="registros-estadia">
@@ -600,6 +639,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
             </div>
         </section>
     </div>   
+
 
       <section class="seccion" id="registro">
             <div class="title-section mb-4">
@@ -818,20 +858,68 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
 </section>
 
  
+    <section class="seccion" id="tarifas">
+        <div class="title-section"><h2>Tarifas</h2></div>
+        <div class="content-section">
+            <form class="filter filter-pagos">
+                    
+                    <div class="filter-inputs">
 
+                        <div class="filter-group">
+                            <label for="id-pago">ID:</label>
+                            <input type="number" id="id-pago" class="filter-ID" name="id-pago" placeholder="0"> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="monto-pago">Monto:</label>
+                            <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="fecha-inicio-pago">fecha inicio:</label>
+                            <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="fecha-fin-pago">Fecha fin:</label>
+                        <input type="date" id="fecha-fin-pago" name="fecha-fin-pago" placeholder=""> 
+                        </div>
+                        <div class="filter-group">
+                            <label for="huesped-pago">Huesped:</label>
+                            <input type="text" id="huesped-pago" name="huesped-pago" placeholder="">
+                        </div>
+                        <input type="hidden" name="form" value="tabla-pagos">
+                    </div>
+                    <button class="btn-buscar" type="submit">Buscar</button>
+                    </form>
+        </div>
+    
+    </section>
+    <section  class="seccion" id="cancelaciones">
+
+        <div class="title-section"><h2>Cancelaciones</h2></div>
+        <div class="content-section">
+            
+
+
+
+        </div>
+
+    </section>
+    
     <?php
-    if(isset($_GET['section'])){
+        if(isset($_GET['section'])){
 
-        $section=$_GET['section'];
-        echo "<script>
-        
-        var GET='$section'
+            $section=$_GET['section'];
+            echo "<script>
+            
+            var GET='$section'
 
-    </script>";
-    }
-    else{
-        echo '<script>var GET= false</script>';
-    }
+        </script>";
+        }
+        else{
+            echo '<script>var GET= false</script>';
+        }
     ?>
 
 
@@ -867,6 +955,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
         });
     </script>
     
-
+        <!-- Usando CDN de jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 </html>
