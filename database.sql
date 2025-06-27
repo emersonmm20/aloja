@@ -172,16 +172,25 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 -- Table `mydb`.`tarifa`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.` tarifas` (
+CREATE TABLE IF NOT EXISTS `mydb`.`tarifas` (
   idTARIFAS INT AUTO_INCREMENT PRIMARY KEY,
-  HABITACIONES_idHABITACIONES INT NOT NULL,
+  idHABITACIONES INT NOT NULL,
   CAPACIDAD INT NOT NULL,
   PRECIOPORNOCHE DECIMAL(10, 2) NOT NULL,
   DESCRIPCION TEXT,
-  FOREIGN KEY (HABITACIONES_idHABITACIONES) REFERENCES habitaciones(idHABITACIONES)
+  FOREIGN KEY (idHABITACIONES) REFERENCES habitaciones(idHABITACIONES)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+
+SELECT t.idTARIFAS, h.NUMERO, t.CAPACIDAD, t.PRECIOPORNOCHE, t.DESCRIPCION
+FROM tarifas t
+JOIN habitaciones h ON t.idHABITACIONES = h.idHABITACIONES
+
+
+
+
+
 -- -----------------------------------------------------
 -- Table `mydb`.`servicios`
 -- -----------------------------------------------------
@@ -192,17 +201,71 @@ CREATE TABLE IF NOT EXISTS `mydb`. `servicios` (
     IMAGEN VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS `mydb`. `informes` (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100),
-    fecha_checkin DATE,
-    fecha_checkout DATE,
-    tipo_habitacion VARCHAR(50),
-    noches INT,
-    desayuno INT DEFAULT 0,
-    spa INT DEFAULT 0,
-    total INT
+-- -----------------------------------------------------
+-- Table `mydb`.`informes`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS informes (
+  idINFORMES INT AUTO_INCREMENT PRIMARY KEY,
+  NOMBRE VARCHAR(100),
+  FECHA_CHECKIN DATE,
+  FECHA_CHECKOUT DATE,
+  IDHABITACIONES INT,
+  NOCHES INT,
+  DESAYUNO TINYINT(1),
+  SPA TINYINT(1),
+  TOTAL DECIMAL(10,2),
+  FOREIGN KEY (IDHABITACIONES) REFERENCES habitaciones(idHABITACIONES)
 );
+
+SELECT 
+  i.idINFORMES, 
+  i.NOMBRE, 
+  i.FECHA_CHECKIN, 
+  i.FECHA_CHECKOUT, 
+  i.NOCHES, 
+  i.DESAYUNO, 
+  i.SPA, 
+  i.TOTAL, 
+  h.NUMERO
+FROM informes AS i
+JOIN habitaciones AS h ON i.IDHABITACIONES = h.idHABITACIONES
+ORDER BY i.idINFORMES DESC;
+
+
+
+
+
+
+-- -----------------------------------------------------
+-- Table `mydb`roles`
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `mydb`.`usuarios` (
+    idUSUARIOS INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100),
+    documento_id VARCHAR(50),
+    rol VARCHAR(50),
+    estado VARCHAR(20)
+);
+
+-- -----------------------------------------------------
+-- Table `mydb`cancelaciones
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`cancelacion`  (
+  idCANCELACION INT AUTO_INCREMENT PRIMARY KEY,
+  idESTADIA INT,
+  idHUESPED INT,
+  FECHACANCELACION DATE,
+  MOTIVOCANCELACION VARCHAR(255),
+  PORCENTAJEREEMBOLSO DECIMAL(5,2),
+  MONTOREEMBOLSADO DECIMAL(10,2),
+  ESTADO VARCHAR(50),
+  OBSERVACIONES TEXT,
+  FOREIGN KEY (idESTADIA) REFERENCES estadia(idESTADIA),
+  FOREIGN KEY (idHUESPED) REFERENCES huesped(idHUESPED)
+);
+
+
 
 
 
@@ -213,19 +276,8 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
-INSERT INTO `mydb`.`habitaciones` (`NUMERO`, `CAPACIDAD`, `ESTADO`) VALUES
-(1, 2, 'DESOCUPADA'),
-(2, 2, 'OCUPADA'),
-(3, 3, 'DESOCUPADA'),
-(4, 3, 'FUERA_DE_SERVICIO'),
-(5, 4, 'DESOCUPADA'),
-(6, 4, 'OCUPADA'),
-(7, 5, 'DESOCUPADA'),
-(8, 5, 'OCUPADA'),
-(9, 6, 'DESOCUPADA'),
-(10, 6, 'FUERA_DE_SERVICIO');
 
 
-INSERT INTO `empleado` (`idEMPLEADO`, `NOMBRE_COMPLETO`, `USUARIO`, `PASSWORD`, `ROL`)
-VALUES (NULL, 'ADMIN', 'ADMIN', 'ADMIN123', 'ADMIN');
+
+
 
