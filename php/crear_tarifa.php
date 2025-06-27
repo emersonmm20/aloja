@@ -1,5 +1,8 @@
-<?php include '../config/conexion.php'; ?>
-<?php $conn = conectarDB(); ?>
+<?php 
+include '../config/conexion.php'; 
+$conn = conectarDB();
+$habitaciones = $conn->query("SELECT * FROM habitaciones");
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -14,28 +17,38 @@
     <h2 class="mb-4">Registrar Nueva Tarifa</h2>
     <form action="guardar_tarifa.php" method="POST" class="card p-4 shadow-sm">
       <div class="mb-3">
-        <label for="habitaciones" class="form-label">Tipo de Habitación</label>
-        <input type="text" id="habitaciones" name="habitaciones" class="form-select" required>
-    
-  
+        <label for="numeroHabitaciones" class="form-label">Número de Habitación</label>
+        <select id="numeroHabitaciones" name="numeroHabitaciones" class="form-select" required>
+          <option value="">Seleccione una habitación</option>
+          <?php while ($fila = $habitaciones->fetch_assoc()): ?>
+            <option value="<?= $fila['idHABITACIONES'] ?>">
+              Habitación <?= $fila['NUMERO'] ?>
+            </option>
+          <?php endwhile; ?>
+        </select>
       </div>
+
       <div class="mb-3">
         <label for="capacidad" class="form-label">Capacidad</label>
         <input type="number" id="capacidad" name="capacidad" class="form-control" required>
       </div>
+
       <div class="mb-3">
         <label for="precio" class="form-label">Precio por Noche</label>
         <input type="number" id="precio" name="precio" class="form-control" step="0.01" required>
       </div>
+
       <div class="mb-3">
         <label for="descripcion" class="form-label">Descripción</label>
         <textarea id="descripcion" name="descripcion" class="form-control" rows="3"></textarea>
       </div>
+
       <div class="d-flex justify-content-between">
-        <a href="index.php" class="btn btn-secondary">Cancelar</a>
+        <a href="../index.php" class="btn btn-secondary">Cancelar</a>
         <button type="submit" class="btn btn-primary">Guardar</button>
       </div>
     </form>
   </div>
 </body>
 </html>
+

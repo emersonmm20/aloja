@@ -1,20 +1,19 @@
 <?php
 include '../config/conexion.php';
 
-$conexion = conectarDB();
+$conn = conectarDB();
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    $id = intval($_GET['id']); // Sanitiza el valor recibido
 
-    $sql = "DELETE FROM informes WHERE id = $id";
+    $sql = "DELETE FROM informes WHERE idINFORMES = $id";
 
-    if ($conexion->query($sql)) {
-        header("Location: ../informes.php");
+    if ($conn->query($sql)) {
+        header("Location: ../index.php");
         exit();
     } else {
-        echo "Error al eliminar el informe: " . $conexion->error;
+        echo "Error al eliminar el informe: " . $conn->error;
     }
 } else {
     echo "ID no especificado.";
 }
-?>

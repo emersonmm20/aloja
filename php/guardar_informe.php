@@ -1,18 +1,26 @@
-<?php include '../config/conexion.php'; ?>
-<?php $conn = conectarDB(); 
+<?php 
+include '../config/conexion.php';
+$conn = conectarDB();
 
 $nombre = $_POST['nombre'];
-$checkin = $_POST['checkin'];
-$checkout = $_POST['checkout'];
-$habitacion = $_POST['habitacion'];
-$noches = (strtotime($checkout) - strtotime($checkin)) / 86400;
+$fecha_checkin = $_POST['fecha_checkin'];
+$fecha_checkout = $_POST['fecha_checkout'];
+$id_habitacion = $_POST['id_habitacion']; // este es el valor del select
+$noches = $_POST['noches'];
+$desayuno = isset($_POST['desayuno']) ? 1 : 0;
+$spa = isset($_POST['spa']) ? 1 : 0;
+$total = $_POST['total'];
 
-$desayuno = isset($_POST['desayuno']) ? 25000 : 0;
-$spa = isset($_POST['spa']) ? 140000 : 0;
-$total = $desayuno + $spa;
+$sql = "INSERT INTO informes (
+            NOMBRE, FECHA_CHECKIN, FECHA_CHECKOUT, IDHABITACIONES, NOCHES, DESAYUNO, SPA, TOTAL
+        ) VALUES (
+            '$nombre', '$fecha_checkin', '$fecha_checkout', $id_habitacion, $noches, $desayuno, $spa, $total
+        )";
 
-$sql = "INSERT INTO informes (nombre, fecha_checkin, fecha_checkout, tipo_habitacion, noches, desayuno, spa, total)
-        VALUES ('$nombre', '$checkin', '$checkout', '$habitacion', $noches, $desayuno, $spa, $total)";
-$conexion->query($sql);
-header("Location: index.php");
+if ($conn->query($sql)) {
+    echo "Informe guardado correctamente.";
+     header("Location: ../index.php");
+} else {
+    echo "Error al guardar informe: " . $conn->error;
+}
 ?>

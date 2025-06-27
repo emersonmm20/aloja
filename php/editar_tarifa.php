@@ -10,17 +10,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     $habitaciones = $conn->query("SELECT * FROM habitaciones");
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
-    $habitacion_id = $_POST['habitaciones'];
+    $habitacion_id = $_POST['numeroHabitaciones'];
     $capacidad = $_POST['capacidad'];
     $precio = $_POST['precio'];
     $descripcion = $_POST['descripcion'];
 
-    $sql = "UPDATE tarifas SET HABITACIONES_idHABITACIONES = ?, CAPACIDAD = ?, PRECIOPORNOCHE = ?, DESCRIPCION = ? WHERE idTARIFAS = ?";
+    $sql = "UPDATE tarifas SET idHABITACIONES = ?, CAPACIDAD = ?, PRECIOPORNOCHE = ?, DESCRIPCION = ? WHERE idTARIFAS = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iidsi", $habitacion_id, $capacidad, $precio, $descripcion, $id);
 
     if ($stmt->execute()) {
-        header("Location: index.php");
+        header("Location: ../index.php");
         exit();
     } else {
         echo "Error al actualizar la tarifa: " . $stmt->error;
@@ -42,11 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     <form action="editar_tarifa.php" method="POST" class="card p-4 shadow-sm">
       <input type="hidden" name="id" value="<?= $tarifa['idTARIFAS'] ?>">
       <div class="mb-3">
-        <label for="habitaciones" class="form-label">Tipo de Habitación</label>
-        <select id="habitaciones" name="habitaciones" class="form-select" required>
+        <label for="numeroHabitaciones" class="form-label">Número de Habitación</label>
+        <select id="numeroHabitaciones" name="numeroHabitaciones" class="form-select" required>
           <?php while ($fila = $habitaciones->fetch_assoc()): ?>
-            <option value="<?= $fila['idHABITACIONES'] ?>" <?= $tarifa['HABITACIONES_idHABITACIONES'] == $fila['idHABITACIONES'] ? 'selected' : '' ?>>
-              <?= $fila['TIPOHABITACIONES'] ?>
+            <option value="<?= $fila['idHABITACIONES'] ?>" <?= $tarifa['idHABITACIONES'] == $fila['idHABITACIONES'] ? 'selected' : '' ?>>
+              <?= $fila['NUMERO'] ?>
             </option>
           <?php endwhile; ?>
         </select>
@@ -64,11 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
         <textarea id="descripcion" name="descripcion" class="form-control" rows="3"><?= $tarifa['DESCRIPCION'] ?></textarea>
       </div>
       <div class="d-flex justify-content-between">
-        <a href="index.php" class="btn btn-secondary">Cancelar</a>
+        <a href="../index.php" class="btn btn-secondary">Cancelar</a>
         <button type="submit" class="btn btn-primary">Actualizar</button>
       </div>
     </form>
   </div>
 </body>
 </html>
-

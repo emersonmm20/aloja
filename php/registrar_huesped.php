@@ -1,8 +1,9 @@
 <?php
 include "../config/conexion.php";
+$conn = conectarDB();
 
 
-$conn= conectarDB();
+
 
 //DATOS: $_POST
 //HUESPED:
