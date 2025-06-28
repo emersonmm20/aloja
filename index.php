@@ -1,5 +1,4 @@
 <?php
-
     include 'config/conexion.php'; 
 
     $conn = conectarDB();
@@ -10,12 +9,11 @@
         echo "<script>alert('Acceso denegado'); window.location.href='principal.php';</script>";
         exit();
     }
-
-        $sql = "SELECT * FROM usuarios";
+    $sql = "SELECT * FROM administrador";
     $resultado = $conn->query($sql);
 
     if (!$resultado) {
-        die("Error al consultar usuarios: " . $conn->error);
+        die("Error al consultar administrador: " . $conn->error);
     }
 
     $tarifas = mysqli_query($conn, "
@@ -118,9 +116,9 @@
                     
                 </li>
 
-                <li><a >Usuarios</a>
+                <li><a >administrador</a>
                     <ul>
-                        <li><a  class="select-section-button">Lista de Usuarios</a></li>
+                        <li><a  class="select-section-button">Lista de administrador</a></li>
                         
                     </ul>
                 </li>
@@ -269,7 +267,6 @@
                                 <th scope="col">FECHA DE PAGO</th>
                                 <th scope="col">Huesped</th>
                                 <th scope="col">id Estadia</th>
-                                <th scope="col">Empleado</th>
                                 
                                 <th scope="col" class="tabla-acciones">Acciones</th>
                             </tr>
@@ -281,9 +278,6 @@
                                 //obtener nombre del huesped:
                                 $id_huesped=mysqli_fetch_assoc(mysqli_query($conn,
                                 'SELECT * from huesped WHERE idHUESPED = ' . $fila["HUESPED_idHUESPED"] ));
-                                $id_empleado=mysqli_fetch_assoc(mysqli_query($conn,
-                                'SELECT * from EMPLEADO WHERE idEMPLEADO = ' . $fila["EMPLEADO_idEMPLEADO"] ));
-                                
                                 ?>
                                 <tr>
                                     
@@ -295,7 +289,6 @@
                                     <!-- <td><?= $fila["HUESPED_idHUESPED"]?></td> -->
                                     <td><?= $id_huesped["NOMBRECOMPLETO"]?></td>
                                     <td><?= $fila["ESTADIA_idESTADIA"]?></td>
-                                    <td><?= $id_empleado["NOMBRE_COMPLETO"]?></td>
                                     <td><a href="./php/crear_cancelacion.php?idPago=<?=$fila["idPAGOS"]?>" class="btn btn-danger">Cancelar</a></td>
 
                                     
@@ -517,11 +510,6 @@
                 <form class="filter">
                     <div>
                         <div class="filter-group">
-                            <label for="filtro-id-estadia">ID:</label>
-                            <input type="number" name="filtro-id-estadia" class="filter-ID" id="filtro-id-estadia">
-                        </div>
-
-                        <div class="filter-group">
                             <label for="filtro-inicio-estadia">Inicio:</label>
                             <input type="date" name="filtro-inicio-estadia" id="filtro-inicio-estadia">
                         </div>
@@ -529,16 +517,6 @@
                         <div class="filter-group">
                             <label for="filtro-fin-estadia">Fin:</label>
                             <input type="date" name="filtro-fin-estadia" id="filtro-fin-estadia">
-                        </div>
-
-                        <div class="filter-group">
-                            <label for="filtro-registro-estadia">Registrado:</label>
-                            <input type="date" name="filtro-registro-estadia" id="filtro-registro-estadia">
-                        </div>
-
-                        <div class="filter-group">
-                            <label for="filtro-costo-estadia">Costo:</label>
-                            <input type="number" name="filtro-costo-estadia" id="filtro-costo-estadia">
                         </div>
 
                         <div class="filter-group">
@@ -563,7 +541,6 @@
                                 <th scope="col">Registrado</th>
                                 <th scope="col">Costo</th>
                                 <th scope="col">Habitacion</th>
-                                <th scope="col" class="tabla-acciones">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="registros-estadia">
@@ -582,7 +559,7 @@
                                     <td><?=$fila["COSTO"]?></td>
                                     
                                     <td><?=$habitacion["NUMERO"]?></td>
-                                    <td><button>ACCION</button></td>
+
                                 </tr>
                                 
                                 
@@ -733,9 +710,9 @@
 
             </div>
         </section>
-        <section class="seccion mt-5" id="lista-de-usuarios">
+        <section class="seccion mt-5" id="lista-de-administrador">
         <div class="title-section mb-4">
-            <h2 class="mb-4">Lista de Usuarios</h2>
+            <h2 class="mb-4">Lista de administrador</h2>
         </div>
         <!-- Botones de acción -->
         
@@ -747,7 +724,7 @@
 
         <div class="table-container">
             <!-- Tabla -->
-            <table class="table-usuarios">
+            <table class="table-administrador">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -760,9 +737,9 @@
                 </thead>
                 <tbody>
                     <?php
-                    $usuarios = $conn->query("SELECT * FROM usuarios");
-                    if ($usuarios && $usuarios->num_rows > 0):
-                        while ($fila = $usuarios->fetch_assoc()):
+                    $administrador = $conn->query("SELECT * FROM administrador");
+                    if ($administrador && $administrador->num_rows > 0):
+                        while ($fila = $administrador->fetch_assoc()):
                     ?>
             
                     <tr>
@@ -780,7 +757,7 @@
                     <?php
                         endwhile;
                     else:
-                        echo "<tr><td colspan='6'>No hay usuarios registrados.</td></tr>";
+                        echo "<tr><td colspan='6'>No hay administrador registrados.</td></tr>";
                     endif;
                     ?>
                 </tbody>

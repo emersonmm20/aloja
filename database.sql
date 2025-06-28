@@ -42,19 +42,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 
 
--- -----------------------------------------------------
--- Table `mydb`.`empleado`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`empleado` (
-  `idEMPLEADO` INT NOT NULL AUTO_INCREMENT,
-  `NOMBRE_COMPLETO` VARCHAR(45) NULL DEFAULT NULL,
-  `USUARIO` VARCHAR(45) NULL DEFAULT NULL,
-  `PASSWORD` VARCHAR(45) NULL DEFAULT NULL,
-  `ROL` ENUM('ADMIN', 'EMPLEADO') NULL DEFAULT NULL,
-  PRIMARY KEY (`idEMPLEADO`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
-
 
 -- -----------------------------------------------------
 -- Table `mydb`.`habitaciones`
@@ -153,14 +140,9 @@ CREATE TABLE IF NOT EXISTS `mydb`.`pagos` (
   `MONTO` int not null,
   `HUESPED_idHUESPED` INT NOT NULL,
   `ESTADIA_idESTADIA` INT NOT NULL,
-  `EMPLEADO_idEMPLEADO` INT NOT NULL,
   PRIMARY KEY (`idPAGOS`, `HUESPED_idHUESPED`),
   INDEX `fk_PAGOS_HUESPED1_idx` (`HUESPED_idHUESPED` ASC),
   INDEX `fk_PAGOS_ESTADIA1_idx` (`ESTADIA_idESTADIA` ASC),
-  INDEX `fk_PAGOS_EMPLEADO1_idx` (`EMPLEADO_idEMPLEADO` ASC),
-  CONSTRAINT `fk_PAGOS_EMPLEADO1`
-    FOREIGN KEY (`EMPLEADO_idEMPLEADO`)
-    REFERENCES `mydb`.`empleado` (`idEMPLEADO`),
   CONSTRAINT `fk_PAGOS_ESTADIA1`
     FOREIGN KEY (`ESTADIA_idESTADIA`)
     REFERENCES `mydb`.`estadia` (`idESTADIA`),
@@ -234,22 +216,6 @@ JOIN habitaciones AS h ON i.IDHABITACIONES = h.idHABITACIONES
 ORDER BY i.idINFORMES DESC;
 
 
-
-
-
-
--- -----------------------------------------------------
--- Table `mydb`roles`
--- -----------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `mydb`.`usuarios` (
-    idUSUARIOS INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100),
-    documento_id VARCHAR(50),
-    rol VARCHAR(50),
-    estado VARCHAR(20)
-);
-
 -- -----------------------------------------------------
 -- Table `mydb`cancelaciones
 -- -----------------------------------------------------
@@ -292,10 +258,15 @@ INSERT INTO `mydb`.`habitaciones` (`NUMERO`, `CAPACIDAD`, `ESTADO`) VALUES
 (10, 6, 'FUERA_DE_SERVICIO');
 
 
-INSERT INTO `mydb`.`EMPLEADO`  (NOMBRE_COMPLETO, USUARIO, PASSWORD, ROL) 
-VALUES 
-('Juan Pérez', 'admin123', 'Admin-111', 'ADMIN'),
-('María Gómez', 'empleado123', 'Empleado-111', 'EMPLEADO');
+
+INSERT INTO `administrador` (`idADMINISTRADOR`, `NOMBRE_COMPLETO`, `USUARIO`, `PASSWORD`, `ROL`) VALUES (NULL, 'Emerson Gonzalez', 'admin123', '273df39e7dc60b5c891f768a7f1ab6f0', 'ADMIN');
+-- admin123, contraseña: Admin-111
+
+
+-- INSERT INTO `mydb`.`EMPLEADO`  (NOMBRE_COMPLETO, USUARIO, PASSWORD, ROL) 
+-- VALUES 
+-- ('Juan Pérez', 'admin123', 'Admin-111', 'ADMIN'),
+-- ('María Gómez', 'empleado123', 'Empleado-111', 'EMPLEADO');
 
 
 

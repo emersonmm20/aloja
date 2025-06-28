@@ -1,14 +1,16 @@
 <?php
 
 include '../config/conexion.php';
-
 session_start();
 if($_SERVER['REQUEST_METHOD']=="POST"){
-    $usuario = $_POST['usuario'];
-    $password = $_POST['password'];
-
     $conn = conectarDB();
-    $query = "SELECT * FROM EMPLEADO WHERE USUARIO = ? AND PASSWORD = ?";
+
+
+
+    $usuario = $_POST['usuario'];
+    $password = md5($_POST['password']);
+
+    $query = "SELECT * FROM administrador WHERE USUARIO = ? AND PASSWORD = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ss", $usuario, $password);
     $stmt->execute();
@@ -22,7 +24,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
         if ($row['ROL'] == 'ADMIN') {
             header("Location: ../index.php");
             exit();
-        } elseif ($row['ROL'] == 'EMPLEADO') {
+        } elseif ($row['ROL'] == 'administrador') {
             header("Location: ../php/panelEmpleado.php");
             exit();
         }
