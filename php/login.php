@@ -3,12 +3,11 @@
 include '../config/conexion.php';
 
 session_start();
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if($_SERVER['REQUEST_METHOD']=="POST"){
     $usuario = $_POST['usuario'];
     $password = $_POST['password'];
 
-    $conn = conectarDB(); 
-  
+    $conn = conectarDB();
     $query = "SELECT * FROM EMPLEADO WHERE USUARIO = ? AND PASSWORD = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ss", $usuario, $password);
@@ -28,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
     } else {
-        echo '
+        ?>
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -38,8 +37,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <title>Document</title>
         </head>
         <body>
-            <script >
-              Swal.fire({
+            <script>
+                Swal.fire({
                 icon: "error",
                 title: "Acceso denegado",
                 text: "Usuario o contraseña incorrectos",
@@ -50,12 +49,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             });
             </script>
         </body>
-        </html>';;
-    }
-        
+        </html>
+    
+        <?php } 
     
 
     $stmt->close();
     $conn->close();
-}
+        }
+
 ?>

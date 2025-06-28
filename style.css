@@ -147,12 +147,12 @@ section div{
     color: var(--color2);
 }
 section .content-section{
-    height: calc(75vh);
+    /* height: calc(75vh);
     color: black;
     overflow-y: scroll;
     position: relative;
     bottom: 0;
-    width: 100%;
+    width: 100%; */
 }
 section .content-section > div{
     display: flex;
@@ -264,7 +264,7 @@ section .content-section ul li{
 section h2{
     font-family: Arial, Helvetica, sans-serif;
     color: #000;
-    width: 100vw;
+    /* width: 100vw; */
     text-align:center;
     padding: 24px 0 ;
     font-size: 30px;
@@ -460,7 +460,7 @@ body {
   }
 /* Aqui termina el buscador de la pagina de inicio */
 
-.btn-estado-habitacion{
+.btn-estado-habitacion, .btn-editar-habitacion{
     outline: none;
     border: none;
     background: var(--color1);
@@ -493,7 +493,7 @@ body {
 
 }
 .tabla-acciones{
-    width: 40%;
+    width: 35%;
 }
 
 

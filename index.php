@@ -1,45 +1,54 @@
 <?php
 
-include 'config/conexion.php'; 
+    include 'config/conexion.php'; 
 
-$conn = conectarDB();
+    $conn = conectarDB();
 
 
+    session_start();
+    if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
+        echo "<script>alert('Acceso denegado'); window.location.href='principal.php';</script>";
+        exit();
+    }
 
-session_start();
-if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
-    echo "<script>alert('Acceso denegado'); window.location.href='principal.php';</script>";
-    exit();
-}
+        $sql = "SELECT * FROM usuarios";
+    $resultado = $conn->query($sql);
 
-$sql = "SELECT * FROM usuarios";
-$resultado = $conn->query($sql);
+    if (!$resultado) {
+        die("Error al consultar usuarios: " . $conn->error);
+    }
 
-if (!$resultado) {
-    die("Error al consultar usuarios: " . $conn->error);
-}
+    $tarifas = mysqli_query($conn, "
+    SELECT t.idTARIFAS, h.NUMERO, t.CAPACIDAD, t.PRECIOPORNOCHE, t.DESCRIPCION
+    FROM tarifas t
+    JOIN habitaciones h ON t.idHABITACIONES = h.idHABITACIONES
+    ORDER BY t.idTARIFAS DESC
+    LIMIT 15
+    ");
 
-$tarifas = mysqli_query($conn, "
-  SELECT t.idTARIFAS, h.NUMERO, t.CAPACIDAD, t.PRECIOPORNOCHE, t.DESCRIPCION
-  FROM tarifas t
-  JOIN habitaciones h ON t.idHABITACIONES = h.idHABITACIONES
-  ORDER BY t.idTARIFAS DESC
-  LIMIT 15
-");
+    if (!$tarifas) {
+    echo "<p>Error al consultar tarifas: " . mysqli_error($conn) . "</p>";
+    }
 
-if (!$tarifas) {
-  echo "<p>Error al consultar tarifas: " . mysqli_error($conn) . "</p>";
-}
+    $informes = mysqli_query($conn, "
+    SELECT 
+    i.idINFORMES, 
+    i.NOMBRE, 
+    i.FECHA_CHECKIN, 
+    i.FECHA_CHECKOUT, 
+    i.NOCHES, 
+    i.DESAYUNO, 
+    i.SPA, 
+    i.TOTAL, 
+    h.NUMERO
+    FROM informes AS i
+    JOIN habitaciones AS h ON i.IDHABITACIONES = h.idHABITACIONES
+    ORDER BY i.idINFORMES DESC;
 
-$informes = mysqli_query($conn, "
-SELECT i.idINFORMES, i.NOMBRE, i.FECHA_CHECKIN, i.FECHA_CHECKOUT, i.NOCHES, i.DESAYUNO, i.SPA, i.TOTAL, h.NUMEROFROM informes AS i
-JOIN habitaciones AS h ON i.IDHABITACIONES = h.idHABITACIONES
-ORDER BY i.idINFORMES DESC;
-
-");
-if (!$informes) {
-  echo "<p>Error al consultar informes: " . mysqli_error($conn) . "</p>";
-}
+    ");
+    if (!$informes) {
+    echo "<p>Error al consultar informes: " . mysqli_error($conn) . "</p>";
+    }
 
 ?>
 
@@ -214,64 +223,6 @@ if (!$informes) {
                 </form>
             </div>
         </section>
-
-        <section class="seccion text-start " id="servicios-y-alojamientos">
-            <div class="title-section">
-
-                <h2>Servicios y Alojamientos</h2>
-
-            </div>
-            <div class="content-section">
-
-                <a href="./php/crear_servicio.php" class="crear-servicio-button btn btn-primary btn-lg btn-block bg-success">Crear Servicio</a>
-                
-                <table class="table-container table">
-                    <thead class="table-servicios thead-dark">
-                     <tr>
-                        <th scope="col">Servicio</th>
-                        <th scope="col">Descripción</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Imagen</th>
-                        <th scope="col">Acciones</th>
-                     </tr>
-                   </thead>
-                
-                   <tbody>
-                    <?php
-                    $servicios = mysqli_query($conn, "SELECT * from servicios");
-                    if (mysqli_num_rows($servicios) == 0) {
-                        echo "<tr><td colspan='5' class='text-center'>No hay servicios registrados.</td></tr>";
-                    }
-                    
-                    while ($fila = mysqli_fetch_assoc($servicios)) {
-                        ?>
-                        
-                        <tr>
-                            <td><?= htmlspecialchars($fila["idSERVICIOS"]) ?></td>
-                            <td><?= htmlspecialchars($fila["DESCRIPCION"]) ?></td>
-                            <td><?= htmlspecialchars($fila["ESTADO"]) ?></td>
-                            <td>
-                                <?php if (!empty($fila["IMAGEN"])): ?>
-                                    <a href="recursos/imgs/<?= $fila["IMAGEN"] ?>" target="_blank" class="btn btn-sm btn-outline-secondary">Ver</a>
-                                    <?php else: ?>
-                                        <span class="text-muted">Sin imagen</span>
-                                        <?php endif; ?>
-                                    </td>
-
-                                    <td>
-                                        <a href="./php/editar_servicio.php?id=<?=$fila["idSERVICIOS"] ?>" class="btn btn-sm btn-warning">Editar</a>
-                                        <a href="./php/eliminar_servicio.php?id=<?= $fila["idSERVICIOS"] ?>" class="btn btn-sm btn-danger " onclick="return confirm('¿Seguro que deseas eliminar este servicio?');">Eliminar</a>
-                             </td>
-                        </tr>
-                        <?php
-                        }
-                        ?>
-                   </tbody>
-                
-                </table>
-            </div>
-        </section>
-
         <section class="seccion" id="historial-de-pagos">
             <div class="title-section">
                 <h2>Historial de Pagos</h2>
@@ -320,7 +271,7 @@ if (!$informes) {
                                 <th scope="col">id Estadia</th>
                                 <th scope="col">Empleado</th>
                                 
-                                <th scope="col">Acciones</th>
+                                <th scope="col" class="tabla-acciones">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="registros-pagos">
@@ -345,7 +296,7 @@ if (!$informes) {
                                     <td><?= $id_huesped["NOMBRECOMPLETO"]?></td>
                                     <td><?= $fila["ESTADIA_idESTADIA"]?></td>
                                     <td><?= $id_empleado["NOMBRE_COMPLETO"]?></td>
-                                    <td><button>Accion</button></td>
+                                    <td><a href="./php/crear_cancelacion.php?idPago=<?=$fila["idPAGOS"]?>" class="btn btn-danger">Cancelar</a></td>
 
                                     
                                 </tr>
@@ -362,45 +313,70 @@ if (!$informes) {
             </div>
         </section>  
 
+        <section class="seccion text-start " id="servicios-y-alojamientos">
+            <div class="title-section">
+
+                <h2>Servicios y Alojamientos</h2>
+
+            </div>
+            <div class="content-section">
+
+                <a href="./php/crear_servicio.php" class="crear-servicio-button btn btn-primary btn-lg btn-block bg-success">Crear Servicio</a>
+                
+                <table class="table-container table">
+                    <thead class="table-servicios thead-dark">
+                     <tr>
+                        <th scope="col">Servicio</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col" class="tabla-acciones">Acciones</th>
+                     </tr>
+                   </thead>
+                
+                   <tbody>
+                    <?php
+                    $servicios = mysqli_query($conn, "SELECT * from servicios");
+                    if (mysqli_num_rows($servicios) == 0) {
+                        echo "<tr><td colspan='5' class='text-center'>No hay servicios registrados.</td></tr>";
+                    }
+                    
+                    while ($fila = mysqli_fetch_assoc($servicios)) {
+                        ?>
+                        
+                        <tr>
+                            <td><?= htmlspecialchars($fila["idSERVICIOS"]) ?></td>
+                            <td><?= htmlspecialchars($fila["DESCRIPCION"]) ?></td>
+                            <td><?= htmlspecialchars($fila["ESTADO"]) ?></td>
+                            <td>
+                                <?php if (!empty($fila["IMAGEN"])): ?>
+                                    <a href="recursos/imgs/<?= $fila["IMAGEN"] ?>" target="_blank" class="btn btn-sm btn-outline-secondary">Ver</a>
+                                    <?php else: ?>
+                                        <span class="text-muted">Sin imagen</span>
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <td>
+                                        <a href="./php/editar_servicio.php?id=<?=$fila["idSERVICIOS"] ?>" class="btn btn-sm btn-warning">Editar</a>
+                                        <a href="./php/eliminar_servicio.php?id=<?= $fila["idSERVICIOS"] ?>" class="btn btn-sm btn-danger " onclick="return confirm('¿Seguro que deseas eliminar este servicio?');">Eliminar</a>
+                             </td>
+                        </tr>
+                        <?php
+                        }
+                        ?>
+                   </tbody>
+                
+                </table>
+            </div>
+        </section>
+        
         <section class="seccion" id="administrar-habitaciones">
             <div class="title-section">
                 <h2>Administrar habitaciones</h2>
             </div>
             <div class="content-section">
-                <form class="filter">
-                    <div class="filter-inputs">
-                        <div class="filter-group">
-                            <label for="filtro-id-habitaciones">ID:</label>
-                            <input type="number" id="filtro-id-habitaciones" class="filter-ID" name="filtro-id-habitaciones" placeholder="">
-                        </div>
-
-                        <div class="filter-group">
-                            <label for="filtro-numero-habitaciones">Monto:</label>
-                            <input type="number" id="filtro-numero-habitaciones" name="filtro-numero-habitaciones" placeholder="">
-                        </div>
-
-                        <div class="filter-group">
-                            <label for="filtro-capacidad-habitaciones">fecha inicio:</label>
-                            <input type="number" id="filtro-capacidad-habitaciones" name="filtro-capacidad-habitaciones" placeholder="">
-                        </div>
-
-                        <div class="filter-group">
-                            <label for="filtro-estado-habitaciones">Fecha fin:</label>
-                            <select name="filtro-estado-habitaciones" id="filtro-estado-habitaciones">
-                                <option value="">Seleccionar estado</option>
-                                <!-- ENUM('OCUPADA', 'DESOCUPADA', 'FUERA_DE_SERVICIO') -->
-                                <option value="OCUPADA">Ocupada</option>
-                                <option value="DESOCUPADA">Desocupada</option>
-                                <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
-                            </select>
-                        </div>
-
-                        <!-- Elementos NO encapsulados -->
-                        <input type="hidden" value="tabla-habitaciones" name="form">
-                        <button class="btn-buscar" type="submit">Buscar</button>
-                        <button>Agregar habitacion</button>
-                    </div>
-                </form>
+                <!--  -->
+                <a style="display:block;" href="php/agregar_habitacion.php" class="btn btn-primary btn-lg btn-block">Agregar habitacion</a>
             
                 
                 <div class="table-container">
@@ -426,9 +402,10 @@ if (!$informes) {
                                     <td id=<?="estado-habitacion-$id"?>><?=str_replace("_", " ", $fila["ESTADO"])?></td>
                                     <td id=<?="acciones-habitacion-" . $id?>>
                                         <button 
-                                        class="btn-estado-habitacion"
+                                        class="btn-estado-habitacion btn btn-primary"
                                         id=<?="cambiar-estado-boton-$id"?>
                                         value=<?=$id?> onclick=<?="mostrarSelectHabitaciones($id)"?> >Cambiar Estado</button>
+                                        
                                         <div id=<?="select-estado-habitacion-$id"?>
                                              class="select-estado-habitacion rounded">
                                             <select id=<?="nuevo-estado-habitacion-$id" ?> class="select-table">
@@ -501,7 +478,7 @@ if (!$informes) {
                                 <th scope="col">Teléfono</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Observaciones</th>
-                                <th scope="col">Acciones</th>
+                                <th scope="col" class="tabla-acciones">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla">
@@ -586,7 +563,7 @@ if (!$informes) {
                                 <th scope="col">Registrado</th>
                                 <th scope="col">Costo</th>
                                 <th scope="col">Habitacion</th>
-                                <th scope="col">Acciones</th>
+                                <th scope="col" class="tabla-acciones">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="registros-estadia">
@@ -672,344 +649,316 @@ if (!$informes) {
             </form>
             </div>
         </section>
-    </div>   
 
+        <section class="seccion" id="cancelaciones">
+                <div class="title-section mb-4">
+                    <h2>Cancelaciones y Reembolsos</h2>
+                </div>
 
-      <section class="seccion" id="registro">
-            <div class="title-section mb-4">
-                <h2>Cancelaciones y Reembolsos</h2>
+                
+
+            <div class="content-section">
+                <!-- <a href="./php/crear_cancelacion.php" class="btn btn-primary mb-3">Nueva Cancelación</a> -->
+                    <!-- Filtro -->
+                <div class="filter">
+                    <p>Filtrar por:</p>
+                    <div>
+                        <label for="filtro-id">Id:</label>
+                        <input type="text" id="filtro-id" placeholder="Buscar por id">
+                
+                        <label for="filtro-estado">Estado:</label>
+                        <select class="form-select" id="filtro-estado">
+                            <option value="">Todos</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Aprobado">Aprobado</option>
+                            <option value="Rechazado">Rechazado</option>
+                        </select>
+
+                        <button class="btn-buscar">Buscar</button>
+                        <button class="btn-limpiar">Limpiar</button>
+                </div>
             </div>
 
-           <div class="">
-             <a href="./php/crear_cancelacion.php" class="btn btn-primary mb-3">Nueva Cancelación</a>
-          </div>
-
-          <div class="content-section">
-                 <!-- Filtro -->
-          <div class="filter">
-           <p>Filtrar por:</p>
-          <div>
-          <label for="filtro-id">Id:</label>
-         <input type="text" id="filtro-id" placeholder="Buscar por id">
-  
-          <label for="filtro-estado">Estado:</label>
-          <select class="form-select" id="filtro-estado">
-         <option value="">Todos</option>
-         <option value="Pendiente">Pendiente</option>
-         <option value="Aprobado">Aprobado</option>
-         <option value="Rechazado">Rechazado</option>
-        </select>
-
-      <button class="btn-buscar">Buscar</button>
-      <button class="btn-limpiar">Limpiar</button>
-    </div>
-  </div>
-
-  <!-- Tabla -->
-  <div class="table-container">
-    <table class="table-cancelacion">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Estadía</th>
-          <th>Huésped</th>
-          <th>Fecha Cancelación</th>
-          <th>Motivo</th>
-          <th>Reembolso (%)</th>
-          <th>Monto</th>
-          <th>Estado</th>
-          <th>Observaciones</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      
-        <tbody>
-            <?php
-            $cancelacion = mysqli_query($conn, "SELECT * FROM cancelacion");
-            if ($cancelacion) {
-                 while($fila = mysqli_fetch_assoc($cancelacion)) {
-            ?>
-            <tr>
-                <td><?= $fila["idCANCELACION"] ?></td>
-                <td><?= $fila["idESTADIA"] ?></td>
-                <td><?= $fila["idHUESPED"] ?></td>
-                <td><?= $fila["FECHACANCELACION"] ?></td>
-                <td><?= $fila["MOTIVOCANCELACION"] ?></td>
-                <td><?= $fila["PORCENTAJEREEMBOLSO"] ?>%</td>
-                <td>$<?= number_format($fila["MONTOREEMBOLSADO"], 0, ',', '.') ?></td>
-                <td><?= $fila["ESTADO"] ?></td>
-                <td><?= $fila["OBSERVACIONES"] ?></td>
-
-                <td>
-                 <a href="./php/editar_cancelacion.php?id=<?= $fila['idCANCELACION'] ?>" class="btn btn-sm btn-warning">Editar</a>
-                 <a href="./php/eliminar_cancelacion.php?id=<?= $fila['idCANCELACION'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que deseas eliminar esta cancelación?');">Eliminar</a>
-                </td>
-            </tr>
-            <?php
-             }
-            } else {
-                echo "<tr><td colspan='10'>Error al consultar cancelaciones: " . mysqli_error($conn) . "</td></tr>";
-            }
-            ?>
-        </tbody>
-    
-      
-    </table>
-  </div>
-
-</div>
-</section>
-
-  <section class="seccion mt-5" id="lista-de-usuarios">
-      <div class="title-section mb-4">
-        <h2 class="mb-4">Lista de Usuarios</h2>
-      </div>
-       <!-- Botones de acción -->
-      <div class="d-flex justify-content-end mb-3 gap-2">
-        <a href="./php/crear_usuario.php" class="btn btn-success">Crear Nuevo Usuario</a>
-      </div>
-
-      <div class="content-section">
-        
-         <!-- Filtro por nombre -->
-      <div class="filter">
-        <form method="post" action="./php/guardar_usuario.php">
-        <label for="busqueda">Filtrar por:</label>
-        <input type="text" name="busqueda" id="busqueda" value="" class="form-control w-auto d-inline">
-        <button type="submit" class="btn btn-warning">Buscar</button>
-      </form>
-      </div>
-         
-      <div class="table-container">
-        <!-- Tabla -->
-        <table class="table-usuarios">
-            <thead>
-                <tr>
+            <!-- Tabla -->
+            <div class="table-container">
+                <table class="table-cancelacion">
+                <thead>
+                    <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Documento ID</th>
-                    <th>Rol</th>
+                    <th>Estadía</th>
+                    <th>Huésped</th>
+                    <th>Fecha Cancelación</th>
+                    <th>Motivo</th>
+                    <th>Reembolso (%)</th>
+                    <th>Monto</th>
                     <th>Estado</th>
+                    <th>Observaciones</th>
                     <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $usuarios = $conn->query("SELECT * FROM usuarios");
-                if ($usuarios && $usuarios->num_rows > 0):
-                    while ($fila = $usuarios->fetch_assoc()):
-                ?>
-           
+                    </tr>
+                </thead>
+                
+                    <tbody>
+                        <?php
+                        $cancelacion = mysqli_query($conn, "SELECT * FROM cancelacion");
+                        if ($cancelacion) {
+                            while($fila = mysqli_fetch_assoc($cancelacion)) {
+                        ?>
+                        <tr>
+                            <td><?= $fila["idCANCELACION"] ?></td>
+                            <td><?= $fila["idESTADIA"] ?></td>
+                            <td><?= $fila["idHUESPED"] ?></td>
+                            <td><?= $fila["FECHACANCELACION"] ?></td>
+                            <td><?= $fila["MOTIVOCANCELACION"] ?></td>
+                            <td><?= $fila["PORCENTAJEREEMBOLSO"] ?>%</td>
+                            <td>$<?= number_format($fila["MONTOREEMBOLSADO"], 0, ',', '.') ?></td>
+                            <td><?= $fila["ESTADO"] ?></td>
+                            <td><?= $fila["OBSERVACIONES"] ?></td>
+
+                            <td>
+                            <a href="./php/editar_cancelacion.php?id=<?= $fila['idCANCELACION'] ?>" class="btn btn-sm btn-warning">Editar</a>
+                            <a href="./php/eliminar_cancelacion.php?id=<?= $fila['idCANCELACION'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que deseas eliminar esta cancelación?');">Eliminar</a>
+                            </td>
+                        </tr>
+                        <?php
+                        }
+                        } else {
+                            echo "<tr><td colspan='10'>Error al consultar cancelaciones: " . mysqli_error($conn) . "</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                
+                
+                </table>
+            </div>
+
+            </div>
+        </section>
+        <section class="seccion mt-5" id="lista-de-usuarios">
+        <div class="title-section mb-4">
+            <h2 class="mb-4">Lista de Usuarios</h2>
+        </div>
+        <!-- Botones de acción -->
+        
+
+        <div class="content-section">
+            <div class="d-flex justify-content-end mb-3 gap-2">
+            <a href="./php/crear_usuario.php" class="btn btn-success">Crear Nuevo Usuario</a>
+        </div>
+
+        <div class="table-container">
+            <!-- Tabla -->
+            <table class="table-usuarios">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Documento ID</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $usuarios = $conn->query("SELECT * FROM usuarios");
+                    if ($usuarios && $usuarios->num_rows > 0):
+                        while ($fila = $usuarios->fetch_assoc()):
+                    ?>
+            
+                    <tr>
+                        <td><?= $fila['id'] ?></td>
+                        <td><?= htmlspecialchars($fila['nombre']) ?></td>
+                        <td><?= htmlspecialchars($fila['documento_id']) ?></td>
+                        <td><?= $fila['rol'] ?></td>
+                        <td><?= $fila['estado'] ?></td>
+                        <td>
+                            <a href="./php/editar_usuario.php?id=<?= $fila['id'] ?>" class="btn btn-primary btn-sm">Editar</a>
+                            <a href="./php/eliminar_usuario.php?id=<?= $fila['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Deseas eliminar este usuario?')">Eliminar</a>
+                        </td>
+                    </tr>
+                
+                    <?php
+                        endwhile;
+                    else:
+                        echo "<tr><td colspan='6'>No hay usuarios registrados.</td></tr>";
+                    endif;
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
+        
+        </div>
+        </section>
+
+
+        <section class="seccion" id="generar">
+            <div class="title-section mb-4">
+                <h2 class="mb-4">Informes de Clientes</h2>
+            </div>
+
+            
+            <div class="content-section">
+                <a href="./php/crear_informe.php" class="btn btn-primary mb-3">Nuevo Informe</a>
+                <div class="table-container">
+                <table class="table-informe">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Numero de Habitación</th>
+                        <th>Noches</th>
+                        <th>Servicios</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                <tbody>
+            <?php
+                // Asegúrate que $resultado es la consulta correcta que hace JOIN con habitaciones
+                if ($informes && mysqli_num_rows($informes) > 0):
+                    while ($fila = mysqli_fetch_assoc($informes)):
+            ?>
                 <tr>
-                    <td><?= $fila['id'] ?></td>
-                    <td><?= htmlspecialchars($fila['nombre']) ?></td>
-                    <td><?= htmlspecialchars($fila['documento_id']) ?></td>
-                    <td><?= $fila['rol'] ?></td>
-                    <td><?= $fila['estado'] ?></td>
-                     <td>
-                        <a href="./php/editar_usuario.php?id=<?= $fila['id'] ?>" class="btn btn-primary btn-sm">Editar</a>
-                        <a href="./php/eliminar_usuario.php?id=<?= $fila['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Deseas eliminar este usuario?')">Eliminar</a>
+                    <td><?= $fila['idINFORMES'] ?></td>
+                    <td><?= $fila['NOMBRE'] ?></td>
+                    <td><?= $fila['FECHA_CHECKIN'] ?></td>
+                    <td><?= $fila['FECHA_CHECKOUT'] ?></td>
+                    <td><?= $fila['NUMERO'] ?></td>
+                    <td><?= $fila['NOCHES'] ?></td>
+                    <td>
+                        <?= $fila['DESAYUNO'] ? 'Desayuno<br>' : '' ?>
+                        <?= $fila['SPA'] ? 'Spa' : '' ?>
+                    </td>
+                    <td>$<?= number_format($fila['TOTAL'], 0, ',', '.') ?></td>
+                    <td>
+                        <a href="./php/editar_informe.php?id=<?= $fila['idINFORMES'] ?>" class="btn btn-info btn-sm">Editar</a>
+                        <a href="./php/eliminar_informe.php?id=<?= $fila['idINFORMES'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este informe?')">Eliminar</a>
                     </td>
                 </tr>
-             
-                <?php
+            <?php 
                     endwhile;
                 else:
-                    echo "<tr><td colspan='6'>No hay usuarios registrados.</td></tr>";
+                    echo "<tr><td colspan='8'>No hay informes registrados.</td></tr>";
                 endif;
-                ?>
+            ?>
             </tbody>
-        </table>
-      </div>
+                </table>
+                </div>
+            </div>
+        </section>
 
-     
-      </div>
-    </section>
+        <section class="seccion" id="tarifas">
+            <div class="title-section mb-4">
+                <h2 class="mb-4">Tarifas del hotel</h2>
+            </div>
 
+        
+            <div class="content-section">
+                <a href="./php/crear_tarifa.php" class="btn btn-primary mb-3">Nueva Tarifa</a>
+            <!-- <div class="filter">
+            <h5>Filtrar por:</h5>
+            <div>
+                <div class="col-md-4">
+                <label for="filtro-habitaciones" class="form-label">Número de Habitación:</label>
+                <select id="filtro-habitaciones" class="form-select">
+                    <option value="">Seleccione una opción...</option>
 
-<section class="seccion" id="generar">
-  <div class="title-section mb-4">
-    <h2 class="mb-4">Informes de Clientes</h2>
-  </div>
+                </select>
+                </div>
+                <div class="col-md-4">
+                <label for="filtro-capacidad" class="form-label">Capacidad:</label>
+                <select id="filtro-capacidad" class="form-select">
+                    <option value="">Seleccione una opción...</option>
+                    <option value="1">1 Persona</option>
+                    <option value="2">2 Personas</option>
+                    <option value="3">3 Personas</option>
+                    <option value="4">4 Personas</option>
+                    <option value="5">5 o más</option>
+                </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end gap-2">
+                <button class="btn btn-success">Buscar</button>
+                <button class="btn btn-secondary">Limpiar</button>
+                </div>
+            </div>
+            </div> -->
 
-  <a href="./php/crear_informe.php" class="btn btn-primary mb-3">Nuevo Informe</a>
-
-  <div class="content-section">
-     <div class="table-container">
-      <table class="table-informe">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Nombre</th>
-            <th>Check-in</th>
-            <th>Check-out</th>
-            <th>Numero de Habitación</th>
-            <th>Noches</th>
-            <th>Servicios</th>
-            <th>Total</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-      <tbody>
-  <?php
-    // Asegúrate que $resultado es la consulta correcta que hace JOIN con habitaciones
-    if ($informes && mysqli_num_rows($informes) > 0):
-        while ($fila = mysqli_fetch_assoc($informes)):
-  ?>
-      <tr>
-         <td><?= $fila['idINFORMES'] ?></td>
-          <td><?= $fila['NOMBRE'] ?></td>
-          <td><?= $fila['FECHA_CHECKIN'] ?></td>
-          <td><?= $fila['FECHA_CHECKOUT'] ?></td>
-          <td><?= $fila['NUMERO'] ?></td>
-          <td><?= $fila['NOCHES'] ?></td>
-          <td>
-              <?= $fila['DESAYUNO'] ? 'Desayuno<br>' : '' ?>
-              <?= $fila['SPA'] ? 'Spa' : '' ?>
-          </td>
-          <td>$<?= number_format($fila['TOTAL'], 0, ',', '.') ?></td>
-          <td>
-              <a href="./php/editar_informe.php?id=<?= $fila['idINFORMES'] ?>" class="btn btn-info btn-sm">Editar</a>
-              <a href="./php/eliminar_informe.php?id=<?= $fila['idINFORMES'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este informe?')">Eliminar</a>
-          </td>
-      </tr>
-  <?php 
-        endwhile;
-    else:
-        echo "<tr><td colspan='8'>No hay informes registrados.</td></tr>";
-    endif;
-  ?>
-</tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
- <section class="seccion" id="tarifas">
-  <div class="title-section mb-4">
-    <h2 class="mb-4">Tarifas del hotel</h2>
-  </div>
-
-  <a href="./php/crear_tarifa.php" class="btn btn-primary mb-3">Nueva Tarifa</a>
-
-  <div class="content-section">
-    <div class="filter">
-      <h5>Filtrar por:</h5>
-      <div>
-        <div class="col-md-4">
-          <label for="filtro-habitaciones" class="form-label">Número de Habitación:</label>
-          <select id="filtro-habitaciones" class="form-select">
-            <option value="">Seleccione una opción...</option>
-            <?php for ($i = 1; $i <= 10; $i++): ?>
-              <option value="<?= $i ?>"><?= $i ?></option>
-            <?php endfor; ?>
-          </select>
-        </div>
-        <div class="col-md-4">
-          <label for="filtro-capacidad" class="form-label">Capacidad:</label>
-          <select id="filtro-capacidad" class="form-select">
-            <option value="">Seleccione una opción...</option>
-            <option value="1">1 Persona</option>
-            <option value="2">2 Personas</option>
-            <option value="3">3 Personas</option>
-            <option value="4">4 Personas</option>
-            <option value="5">5 o más</option>
-          </select>
-        </div>
-        <div class="col-md-4 d-flex align-items-end gap-2">
-          <button class="btn btn-success">Buscar</button>
-          <button class="btn btn-secondary">Limpiar</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="table-container">
-      <table class="table-tarifas">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Número de Habitación</th>
-            <th>Capacidad</th>
-            <th>Precio por Noche</th>
-            <th>Descripción</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="tarifas">
-          <?php
-            while($fila = mysqli_fetch_assoc($tarifas)):
-          ?>
-          <tr>
-            <td><?= $fila["idTARIFAS"] ?></td>
-            <td><?= $fila["NUMERO"] ?></td>
-            <td><?= $fila["CAPACIDAD"] ?></td>
-            <td>$<?= number_format($fila["PRECIOPORNOCHE"], 0, ',', '.') ?></td>
-            <td><?= $fila["DESCRIPCION"] ?></td>
-            <td>
-              <a href="php/editar_tarifa.php?id=<?= $fila['idTARIFAS'] ?>" class="btn btn-warning btn-sm">Editar</a>
-              <a href="php/eliminar_tarifa.php?id=<?= $fila['idTARIFAS'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta tarifa?')">Eliminar</a>
-            </td>
-          </tr>
-          <?php endwhile; ?>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-
-
-
- 
-    <section class="seccion" id="tarifas">
-        <div class="title-section"><h2>Tarifas</h2></div>
-        <div class="content-section">
-            <form class="filter filter-pagos">
-                    
-                    <div class="filter-inputs">
-
-                        <div class="filter-group">
-                            <label for="id-pago">ID:</label>
-                            <input type="number" id="id-pago" class="filter-ID" name="id-pago" placeholder="0"> 
-
-                        </div>
-                        <div class="filter-group">
-                            <label for="monto-pago">Monto:</label>
-                            <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
-
-                        </div>
-                        <div class="filter-group">
-                            <label for="fecha-inicio-pago">fecha inicio:</label>
-                            <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
-
-                        </div>
-                        <div class="filter-group">
-                            <label for="fecha-fin-pago">Fecha fin:</label>
-                        <input type="date" id="fecha-fin-pago" name="fecha-fin-pago" placeholder=""> 
-                        </div>
-                        <div class="filter-group">
-                            <label for="huesped-pago">Huesped:</label>
-                            <input type="text" id="huesped-pago" name="huesped-pago" placeholder="">
-                        </div>
-                        <input type="hidden" name="form" value="tabla-pagos">
-                    </div>
-                    <button class="btn-buscar" type="submit">Buscar</button>
-                    </form>
-        </div>
+            <div class="table-container">
+            <table class="table-tarifas">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Número de Habitación</th>
+                    <th>Capacidad</th>
+                    <th>Precio por Noche</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody class="tarifas">
+                <?php
+                    while($fila = mysqli_fetch_assoc($tarifas)):
+                ?>
+                <tr>
+                    <td><?= $fila["idTARIFAS"] ?></td>
+                    <td><?= $fila["NUMERO"] ?></td>
+                    <td><?= $fila["CAPACIDAD"] ?></td>
+                    <td>$<?= number_format($fila["PRECIOPORNOCHE"], 0, ',', '.') ?></td>
+                    <td><?= $fila["DESCRIPCION"] ?></td>
+                    <td>
+                    <a href="php/editar_tarifa.php?id=<?= $fila['idTARIFAS'] ?>" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="php/eliminar_tarifa.php?id=<?= $fila['idTARIFAS'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta tarifa?')">Eliminar</a>
+                    </td>
+                </tr>
+                <?php endwhile; ?>
+                </tbody>
+            </table>
+            </div>
+            </div>
+        </section>
     
-    </section>
-    <section  class="seccion" id="cancelaciones">
+        <section class="seccion" id="tarifas">
+            <div class="title-section"><h2>Tarifas</h2></div>
+            <div class="content-section">
+                <form class="filter filter-pagos">
+                        
+                        <div class="filter-inputs">
 
-        <div class="title-section"><h2>Cancelaciones</h2></div>
-        <div class="content-section">
-            
+                            <div class="filter-group">
+                                <label for="id-pago">ID:</label>
+                                <input type="number" id="id-pago" class="filter-ID" name="id-pago" placeholder="0"> 
 
+                            </div>
+                            <div class="filter-group">
+                                <label for="monto-pago">Monto:</label>
+                                <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
 
+                            </div>
+                            <div class="filter-group">
+                                <label for="fecha-inicio-pago">fecha inicio:</label>
+                                <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
 
-        </div>
-
-    </section>
-    
+                            </div>
+                            <div class="filter-group">
+                                <label for="fecha-fin-pago">Fecha fin:</label>
+                            <input type="date" id="fecha-fin-pago" name="fecha-fin-pago" placeholder=""> 
+                            </div>
+                            <div class="filter-group">
+                                <label for="huesped-pago">Huesped:</label>
+                                <input type="text" id="huesped-pago" name="huesped-pago" placeholder="">
+                            </div>
+                            <input type="hidden" name="form" value="tabla-pagos">
+                        </div>
+                        <button class="btn-buscar" type="submit">Buscar</button>
+                        </form>
+            </div>
+        
+        </section>
+        
+    </div>   
     <?php
         if(isset($_GET['section'])){
 
@@ -1025,14 +974,12 @@ if (!$informes) {
         }
     ?>
 
-    <script src="script.js?v=<?php echo time(); ?>"></script>
+    <script src="js/navegacionSecciones.js?v=<?php echo time(); ?>"></script>
     <script src="js/filtro.js?v=<?php echo time(); ?>"></script>
     <script src="js/habitaciones_acciones.js?v=<?php echo time(); ?>"></script>
     <!-- Cerrar sesión -->
     <script src="js/cerrarSesion.js"></script>
 
-    
-    
         <!-- Usando CDN de jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>

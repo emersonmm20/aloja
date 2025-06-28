@@ -52,13 +52,3 @@
             showSection(sections[0].id);
         }
     }
-
-
-// });
-
-// window.addEventListener("load",()=>{
-//     setTimeout(()=>{
-//         showSection('$section')
-//     },500)
-// })
-
