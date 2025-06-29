@@ -24,8 +24,8 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
         if ($row['ROL'] == 'ADMIN') {
             header("Location: ../index.php");
             exit();
-        } elseif ($row['ROL'] == 'administrador') {
-            header("Location: ../php/panelEmpleado.php");
+        } elseif ($row['ROL'] == 'EMPLEADO') {
+            header("Location: ../panelEmpleado.php");
             exit();
         }
     } else {

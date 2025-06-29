@@ -6,7 +6,7 @@
 
     session_start();
     if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
-        echo "<script>alert('Acceso denegado'); window.location.href='principal.php';</script>";
+        echo "<script>alert('Acceso denegado'); window.location.href='php/logOut.php';</script>";
         exit();
     }
     $sql = "SELECT * FROM administrador";
@@ -440,10 +440,14 @@
                             <label for="filtro-nombre">Nombre:</label>
                             <input type="text" id="filtro-nombre" placeholder="Buscar por nombre">
                         </div>
+                        <div class="filter-group">
+                            <label for="filtro-numero-documento">Documento</label>
+                            <input type="number" id="filtro-numero-documento" name="filtro-numero-documento" placeholder="Buscar por nombre">
+                        </div>
 
                         <div class="filter-group">
                             <label for="filtro-documento">Tipo Documento:</label>
-                            <select id="filtro-documento" name="tipo_documento" required>
+                            <select id="filtro-documento" name="tipo_documento">
                                 <option value="">Seleccione un tipo...</option>
                                 <option value="cedula-extranjeria">Cédula de Extranjería</option>
                                 <option value="cedula-identidad">Cédula de Identidad</option>
@@ -454,8 +458,8 @@
                         </div>
 
                         <!-- Elementos NO encapsulados -->
-                        <input type="hidden" name="form" value="tabla-huespedes">
-                        <button class="btn-buscar" type="submit">Buscar</button>
+                        
+                        <button class="btn-buscar" type="submit" onclick="filtroHuespedes()">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                     </div>
                 </form>
@@ -474,7 +478,7 @@
                                 <th scope="col" class="tabla-acciones">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="registros-tabla">
+                        <tbody class="registros-tabla" id="tabla-huespedes">
                             <?php 
                             $huesped=mysqli_query($conn,"SELECT * from huesped ORDER BY idHUESPED DESC LIMIT 15");
                             while($fila = mysqli_fetch_assoc($huesped)){
