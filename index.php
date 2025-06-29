@@ -718,7 +718,7 @@
             
 
             <div class="content-section">
-            <form class="filter filter-administrador">
+            <!-- <form class="filter filter-administrador">
                 <p>Filtrar por:</p>
                 <div class="filter-inputs">
                     <div class="filter-group">
@@ -749,10 +749,10 @@
                 <button type="button" class="btn-buscar" onclick="filtrarAdministradores()">Buscar</button>
                 <button type="button" class="btn-limpiar" onclick="limpiarFiltrosAdministradores()">Limpiar</button>
                 <a href="./php/crear_usuario.php" class="btn-buscar">Crear Nuevo Usuario</a>
-            </form>
+            </form> -->
             <div class="table-container">
                 <!-- Tabla -->
-                <table class="table-administrador">
+                <table class="table-administrador table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -778,6 +778,7 @@
                             <td>
                                 <a href="./php/editar_usuario.php?id=<?= $fila['idADMINISTRADOR'] ?>" class="btn btn-primary btn-sm">Editar</a>
                                 <a href="./php/eliminar_usuario.php?id=<?= $fila['idADMINISTRADOR'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Deseas eliminar este usuario?')">Eliminar</a>
+                                <a href="./php/reestablecer_contraseña.php?id=<?= $fila['idADMINISTRADOR'] ?>" class="btn btn-dark btn-sm">reestablecer contraseña</a>
                             </td>
                         </tr>
                     
