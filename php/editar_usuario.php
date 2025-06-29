@@ -9,7 +9,7 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-$usuario = $conn->query("SELECT * FROM usuarios WHERE id = $id")->fetch_assoc();
+$usuario = $conn->query("SELECT * FROM administrador WHERE idADMINISTRADOR = $id")->fetch_assoc();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
@@ -17,12 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rol = $_POST['rol'];
     $estado = $_POST['estado'];
 
-    $conn->query("UPDATE usuarios SET 
+    $conn->query("UPDATE administrador SET 
         nombre = '$nombre',
         documento_id = '$documento',
         rol = '$rol',
         estado = '$estado'
-        WHERE id = $id");
+        WHERE idADMINISTRADOR = $id");
 
     header("Location: ../index.php");
     exit;
@@ -43,35 +43,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <section class="seccion">
       <h2 class="mb-4">Editar Usuario</h2>
       <form method="post" action="">
-        <input type="hidden" name="id" value="<?= $usuario['id'] ?>">
+        <input type="hidden" name="id" value="<?= $usuario['idADMINISTRADOR'] ?>">
 
         <div class="mb-3">
           <label class="form-label">Nombre</label>
-          <input type="text" class="form-control" name="nombre" value="<?= $usuario['nombre'] ?>" required>
+          <input type="text" class="form-control" name="nombre" value="<?= $usuario['NOMBRE_COMPLETO'] ?>" required>
         </div>
 
         <div class="mb-3">
-         <label class="form-label">Documento ID</label>
-         <input type="number" class="form-control" name="documento_id" value="<?= $usuario['documento_id'] ?>" required>
+         <label class="form-label">Usuario</label>
+         <input type="number" class="form-control" name="documento_id" value="<?=$usuario['USUARIO']?>" required>
         </div>
         
         <div class="mb-3">
          <label class="form-label">Rol</label>
          <select name="rol" class="form-select">
-          <option <?= $usuario['rol'] == 'Administrador' ? 'selected' : '' ?>>Administrador</option>
-          <option <?= $usuario['rol'] == 'Editor' ? 'selected' : '' ?>>Editor</option>
-          <option <?= $usuario['rol'] == 'Cocinero' ? 'selected' : '' ?>>Cocinero</option>
-          <option <?= $usuario['rol'] == 'Celador' ? 'selected' : '' ?>>Celador</option>
+          <option <?= $usuario['ROL'] == 'ADMIN' ? 'selected' : '' ?> value="ADMIN">Administrador</option>
+          <option <?= $usuario['ROL'] == 'EMPLEADO' ? 'selected' : '' ?> value="EMPLEADO">Administrador</option>
+
          </select>
         </div>
 
-        <div class="mb-3">
+        <!-- <div class="mb-3">
          <label class="form-label">Estado</label>
          <select name="estado" class="form-select">
                    <option <?= $usuario['estado'] == 'Activo' ? 'selected' : '' ?>>Activo</option>
                    <option <?= $usuario['estado'] == 'Inactivo' ? 'selected' : '' ?>>Inactivo</option>
            </select>
-         </div>
+         </div> -->
 
          <button type="submit" class="btn btn-primary">Actualizar</button>
         <a href="../index.php" class="btn btn-secondary">Cancelar</a>

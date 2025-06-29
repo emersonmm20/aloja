@@ -2,7 +2,7 @@
 include '../config/conexion.php';
 $conn = conectarDB();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nombre = $_POST['nombre'] ?? '';
     $usuario = $_POST['usuario'] ?? ''; // Asegúrate de que este campo exista en tu formulario
     $password = md5($_POST['password']);
@@ -59,13 +59,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="EMPLEADO">Empleado</option>
           </select>
         </div>
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label for="estado" class="form-label">Estado</label>
           <select name="estado" class="form-select">
             <option>Activo</option>
             <option>Inactivo</option>
           </select>
-        </div>
+        </div> -->
         <button type="submit" class="btn btn-success">Guardar</button>
         <a href="index.php" class="btn btn-secondary">Volver</a>
       </form>

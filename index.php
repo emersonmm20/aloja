@@ -226,7 +226,7 @@
                 <h2>Historial de Pagos</h2>
             </div>
             <div class="content-section">
-                <form class="filter filter-pagos">
+                <form class="filter">
                     
                     <div class="filter-inputs">
 
@@ -255,7 +255,7 @@
                         </div>
                         <input type="hidden" name="form" value="tabla-pagos">
                     </div>
-                    <button class="btn-buscar" type="submit">Buscar</button>
+                    <button class="btn-buscar" type="submit" onclick="filtrarPagos()">Buscar</button>
                     </form>
 
                 <div class="table-container">
@@ -523,14 +523,13 @@
                             <input type="date" name="filtro-fin-estadia" id="filtro-fin-estadia">
                         </div>
 
-                        <div class="filter-group">
+                        <!-- <div class="filter-group">
                             <label for="filtro-habitacion-estadia">Habitacion:</label>
                             <input type="number" name="filtro-habitacion-estadia" id="filtro-habitacion-estadia">
-                        </div>
+                        </div> -->
 
                         <!-- Elementos NO encapsulados -->
-                        <input type="hidden" name="form" value="tabla-estadia">
-                        <button class="btn-buscar" type="submit">Buscar</button>
+                        <button class="btn-buscar" type="submit" onclick="filtrarEstadias()">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                     </div>
                 </form>
@@ -544,16 +543,13 @@
                                 <th scope="col">FIN</th>
                                 <th scope="col">Registrado</th>
                                 <th scope="col">Costo</th>
-                                <th scope="col">Habitacion</th>
+                                
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="registros-estadia">
                             <?php 
                             $estadia=mysqli_query($conn,"SELECT * from estadia ORDER BY FECHA_REGISTRO DESC LIMIT 15");
                             while($fila = mysqli_fetch_assoc($estadia)){
-                                $Nhabitacion= $fila["HABITACIONES_idHABITACIONES"];
-                                $habitacion=mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM habitaciones WHERE idHABITACIONES = $Nhabitacion"));
-
                                 ?>
                                 <tr>
                                     <td><?=$fila["idESTADIA"]?></td>
@@ -562,7 +558,7 @@
                                     <td><?=$fila["FECHA_REGISTRO"]?></td>
                                     <td><?=$fila["COSTO"]?></td>
                                     
-                                    <td><?=$habitacion["NUMERO"]?></td>
+                                    
 
                                 </tr>
                                 
@@ -641,7 +637,7 @@
             <div class="content-section">
                 <!-- <a href="./php/crear_cancelacion.php" class="btn btn-primary mb-3">Nueva Cancelación</a> -->
                     <!-- Filtro -->
-                <div class="filter">
+                <form class="filter">
                     <p>Filtrar por:</p>
                     <div>
                         <label for="filtro-id">Id:</label>
@@ -655,10 +651,10 @@
                             <option value="Rechazado">Rechazado</option>
                         </select>
 
-                        <button class="btn-buscar">Buscar</button>
+                        <button class="btn-buscar" type="submit" onclick="filtrarCancelaciones()">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                 </div>
-            </div>
+            </form>
 
             <!-- Tabla -->
             <div class="table-container">
@@ -715,61 +711,88 @@
             </div>
         </section>
         <section class="seccion mt-5" id="lista-de-administrador">
-        <div class="title-section mb-4">
-            <h2 class="mb-4">Lista de administrador</h2>
-        </div>
-        <!-- Botones de acción -->
-        
-
-        <div class="content-section">
-            <div class="d-flex justify-content-end mb-3 gap-2">
-            <a href="./php/crear_usuario.php" class="btn btn-success">Crear Nuevo Usuario</a>
-        </div>
-
-        <div class="table-container">
-            <!-- Tabla -->
-            <table class="table-administrador">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Documento ID</th>
-                        <th>Rol</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $administrador = $conn->query("SELECT * FROM administrador");
-                    if ($administrador && $administrador->num_rows > 0):
-                        while ($fila = $administrador->fetch_assoc()):
-                    ?>
+            <div class="title-section mb-4">
+                <h2 class="mb-4">Lista de administrador</h2>
+            </div>
+            <!-- Botones de acción -->
             
-                    <tr>
-                        <td><?= $fila['id'] ?></td>
-                        <td><?= htmlspecialchars($fila['nombre']) ?></td>
-                        <td><?= htmlspecialchars($fila['documento_id']) ?></td>
-                        <td><?= $fila['rol'] ?></td>
-                        <td><?= $fila['estado'] ?></td>
-                        <td>
-                            <a href="./php/editar_usuario.php?id=<?= $fila['id'] ?>" class="btn btn-primary btn-sm">Editar</a>
-                            <a href="./php/eliminar_usuario.php?id=<?= $fila['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Deseas eliminar este usuario?')">Eliminar</a>
-                        </td>
-                    </tr>
-                
-                    <?php
-                        endwhile;
-                    else:
-                        echo "<tr><td colspan='6'>No hay administrador registrados.</td></tr>";
-                    endif;
-                    ?>
-                </tbody>
-            </table>
-        </div>
 
-        
-        </div>
+            <div class="content-section">
+            <form class="filter filter-administrador">
+                <p>Filtrar por:</p>
+                <div class="filter-inputs">
+                    <div class="filter-group">
+                        <label for="filtro-id">ID:</label>
+                        <input type="number" id="filtro-id" placeholder="ID del usuario">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filtro-nombre">Nombre:</label>
+                        <input type="text" id="filtro-nombre" placeholder="Nombre completo">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filtro-documento">Usuario:</label>
+                        <input type="text" id="filtro-documento" placeholder="Número de documento">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filtro-rol">Rol:</label>
+                        <select id="filtro-rol">
+                            <option value="">Todos</option>
+                            <option value="ADMIN">Administrador</option>
+                            <option value="EMPLEADO">Empleado</option>
+                        </select>
+                    </div>
+
+                </div>
+                <button type="button" class="btn-buscar" onclick="filtrarAdministradores()">Buscar</button>
+                <button type="button" class="btn-limpiar" onclick="limpiarFiltrosAdministradores()">Limpiar</button>
+                <a href="./php/crear_usuario.php" class="btn-buscar">Crear Nuevo Usuario</a>
+            </form>
+            <div class="table-container">
+                <!-- Tabla -->
+                <table class="table-administrador">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $administrador = $conn->query("SELECT * FROM administrador");
+                        if ($administrador && $administrador->num_rows > 0):
+                            while ($fila = $administrador->fetch_assoc()):
+                        ?>
+                
+                        <tr>
+                            <td><?= $fila['idADMINISTRADOR'] ?></td>
+                            <td><?= htmlspecialchars($fila['NOMBRE_COMPLETO']) ?></td>
+                            <td><?= htmlspecialchars($fila['USUARIO']) ?></td>
+                            <td><?= $fila['ROL'] ?></td>
+                            <td>
+                                <a href="./php/editar_usuario.php?id=<?= $fila['idADMINISTRADOR'] ?>" class="btn btn-primary btn-sm">Editar</a>
+                                <a href="./php/eliminar_usuario.php?id=<?= $fila['idADMINISTRADOR'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Deseas eliminar este usuario?')">Eliminar</a>
+                            </td>
+                        </tr>
+                    
+                        <?php
+                            endwhile;
+                        else:
+                            echo "<tr><td colspan='6'>No hay administrador registrados.</td></tr>";
+                        endif;
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+
+            
+            </div>
         </section>
 
 
@@ -939,7 +962,7 @@
         
         </section>
         
-    </div>   
+    </div>
     <?php
         if(isset($_GET['section'])){
 

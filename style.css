@@ -223,7 +223,7 @@ section .content-section ul li{
     color: #fff;
     background-color: var(--color1);
 }
-.filter button{
+.filter button, .filter a{
     padding: 10px;
     background-color: var(--color4);
     color: #000;
