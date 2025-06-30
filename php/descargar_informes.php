@@ -12,13 +12,9 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-
 $query = "SELECT 
   i.idINFORMES, 
   i.NOMBRE, 
-  i.FECHA_CHECKIN, 
-  i.FECHA_CHECKOUT, 
-  i.NOCHES, 
   i.DESAYUNO, 
   i.SPA, 
   i.TOTAL, 
@@ -35,21 +31,64 @@ if (!$resultado || mysqli_num_rows($resultado) == 0) {
 
 $datos = mysqli_fetch_assoc($resultado);
 
-// Generar HTML del PDF
-$html = "
-<h2 style='text-align:center;'>Informe de Huésped</h2>
-<p><strong>ID Informe:</strong> {$datos['idINFORMES']}</p>
-<p><strong>Nombre:</strong> {$datos['NOMBRE']}</p>
-<p><strong>Check-in:</strong> {$datos['FECHA_CHECKIN']}</p>
-<p><strong>Check-out:</strong> {$datos['FECHA_CHECKOUT']}</p>
-<p><strong>Habitación:</strong> {$datos['NUMERO']}</p>
-<p><strong>Noches:</strong> {$datos['NOCHES']}</p>
-<p><strong>Servicios:</strong><br>"
-    . ($datos['DESAYUNO'] ? "- Desayuno<br>" : "")
-    . ($datos['SPA'] ? "- Spa<br>" : "") .
-"</p>
-<p><strong>Total pagado:</strong> $" . number_format($datos['TOTAL'], 0, ',', '.') . "</p>
-";
+// HTML con estilo bonito
+$html = '
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: DejaVu Sans, sans-serif;
+      padding: 20px;
+      background-color: #f7f7f7;
+      color: #333;
+    }
+    .container {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      padding: 30px;
+      border-radius: 10px;
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .label {
+      font-weight: bold;
+      color: #555;
+    }
+    .info {
+      margin-bottom: 10px;
+    }
+    .services {
+      background-color: #ecf0f1;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Informe de Huésped</h2>
+    <div class="info"><span class="label">ID Informe:</span> ' . $datos['idINFORMES'] . '</div>
+    <div class="info"><span class="label">Nombre:</span> ' . $datos['NOMBRE'] . '</div>
+    <div class="info"><span class="label">Habitación:</span> ' . $datos['NUMERO'] . '</div>
+    <div class="info"><span class="label">Servicios:</span>
+      <div class="services">'
+        . ($datos['DESAYUNO'] ? '✔ Desayuno<br>' : '')
+        . ($datos['SPA'] ? '✔ Spa<br>' : '') . '
+      </div>
+    </div>
+    <div class="info total">Total pagado: $' . number_format($datos['TOTAL'], 0, ',', '.') . '</div>
+  </div>
+</body>
+</html>
+';
 
 // Configurar Dompdf
 $options = new Options();
@@ -63,3 +102,4 @@ $dompdf->render();
 $dompdf->stream("informe_huesped_{$datos['idINFORMES']}.pdf", ["Attachment" => true]);
 exit;
 ?>
+

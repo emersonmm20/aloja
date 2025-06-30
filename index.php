@@ -40,9 +40,6 @@ $resultado = $conn->query($sql);
     SELECT 
     i.idINFORMES, 
     i.NOMBRE, 
-    i.FECHA_CHECKIN, 
-    i.FECHA_CHECKOUT, 
-    i.NOCHES, 
     i.DESAYUNO, 
     i.SPA, 
     i.TOTAL, 
@@ -141,8 +138,7 @@ $habitaciones = mysqli_query($conn, "SELECT * FROM habitaciones ORDER BY NUMERO 
                     </ul>
                 </li>
 
-                <li><a  class="select-section-button">Tarifas</a>
-                </li>
+                
   
                 <li class="nav-item"><a href="principal.php" class="nav-link text-white">Página principal</a></li>
                 <li><a href="./php/logOut.php"  class=" flex nav-link px-2 py-1 font-bold text-white hover:bg-amber-500 hover:text-primary transition">Cerrar Sesion</a></li>
@@ -381,7 +377,6 @@ $habitaciones = mysqli_query($conn, "SELECT * FROM habitaciones ORDER BY NUMERO 
   <div class="title-section">
     <h2>Administrar habitaciones</h2>
   </div>
-
   <div class="content-section">
     <a href="./php/crear_habitacion.php" class="crear-habitacion-button btn btn-primary btn-lg btn-block bg-success">Crear Habitación</a>
     <form class="filter">
@@ -413,7 +408,6 @@ $habitaciones = mysqli_query($conn, "SELECT * FROM habitaciones ORDER BY NUMERO 
 
         <input type="hidden" value="tabla-habitaciones" name="form">
         <button class="btn-buscar" type="submit">Buscar</button>
-        <button type="button">Agregar habitación</button>
       </div>
     </form>
 
@@ -423,9 +417,9 @@ $habitaciones = mysqli_query($conn, "SELECT * FROM habitaciones ORDER BY NUMERO 
           <tr>
             <th scope="col">Número</th>
             <th scope="col">Capacidad</th>
-            <th scope="col">Estado</th>
             <th scope="col">Descripción</th>
             <th scope="col">Precio</th>
+            <th scope="col">Estado</th>
             <th scope="col">Imagen</th>
             <th scope="col" class="tabla-acciones">Acciones</th>
           </tr>
@@ -900,113 +894,7 @@ $habitaciones = mysqli_query($conn, "SELECT * FROM habitaciones ORDER BY NUMERO 
   </div>
 </section>
 
-        <section class="seccion" id="tarifas">
-            <div class="title-section mb-4">
-                <h2 class="mb-4">Tarifas del hotel</h2>
-            </div>
-
         
-            <div class="content-section">
-                <a href="./php/crear_tarifa.php" class="btn btn-primary mb-3">Nueva Tarifa</a>
-            <!-- <div class="filter">
-            <h5>Filtrar por:</h5>
-            <div>
-                <div class="col-md-4">
-                <label for="filtro-habitaciones" class="form-label">Número de Habitación:</label>
-                <select id="filtro-habitaciones" class="form-select">
-                    <option value="">Seleccione una opción...</option>
-
-                </select>
-                </div>
-                <div class="col-md-4">
-                <label for="filtro-capacidad" class="form-label">Capacidad:</label>
-                <select id="filtro-capacidad" class="form-select">
-                    <option value="">Seleccione una opción...</option>
-                    <option value="1">1 Persona</option>
-                    <option value="2">2 Personas</option>
-                    <option value="3">3 Personas</option>
-                    <option value="4">4 Personas</option>
-                    <option value="5">5 o más</option>
-                </select>
-                </div>
-                <div class="col-md-4 d-flex align-items-end gap-2">
-                <button class="btn btn-success">Buscar</button>
-                <button class="btn btn-secondary">Limpiar</button>
-                </div>
-            </div>
-            </div> -->
-
-            <div class="table-container">
-            <table class="table-tarifas">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Número de Habitación</th>
-                    <th>Capacidad</th>
-                    <th>Precio por Noche</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody class="tarifas">
-                <?php
-                    while($fila = mysqli_fetch_assoc($tarifas)):
-                ?>
-                <tr>
-                    <td><?= $fila["idTARIFAS"] ?></td>
-                    <td><?= $fila["NUMERO"] ?></td>
-                    <td><?= $fila["CAPACIDAD"] ?></td>
-                    <td>$<?= number_format($fila["PRECIOPORNOCHE"], 0, ',', '.') ?></td>
-                    <td><?= $fila["DESCRIPCION"] ?></td>
-                    <td>
-                    <a href="php/editar_tarifa.php?id=<?= $fila['idTARIFAS'] ?>" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="php/eliminar_tarifa.php?id=<?= $fila['idTARIFAS'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta tarifa?')">Eliminar</a>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
-                </tbody>
-            </table>
-            </div>
-            </div>
-        </section>
-    
-        <section class="seccion" id="tarifas">
-            <div class="title-section"><h2>Tarifas</h2></div>
-            <div class="content-section">
-                <form class="filter filter-pagos">
-                        
-                        <div class="filter-inputs">
-
-                            <div class="filter-group">
-                                <label for="id-pago">ID:</label>
-                                <input type="number" id="id-pago" class="filter-ID" name="id-pago" placeholder="0"> 
-
-                            </div>
-                            <div class="filter-group">
-                                <label for="monto-pago">Monto:</label>
-                                <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
-
-                            </div>
-                            <div class="filter-group">
-                                <label for="fecha-inicio-pago">fecha inicio:</label>
-                                <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
-
-                            </div>
-                            <div class="filter-group">
-                                <label for="fecha-fin-pago">Fecha fin:</label>
-                            <input type="date" id="fecha-fin-pago" name="fecha-fin-pago" placeholder=""> 
-                            </div>
-                            <div class="filter-group">
-                                <label for="huesped-pago">Huesped:</label>
-                                <input type="text" id="huesped-pago" name="huesped-pago" placeholder="">
-                            </div>
-                            <input type="hidden" name="form" value="tabla-pagos">
-                        </div>
-                        <button class="btn-buscar" type="submit">Buscar</button>
-                        </form>
-            </div>
-        
-        </section>
         
     </div>
     <?php

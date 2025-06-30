@@ -1,5 +1,5 @@
 <?php
-include '../config/conexion.php'; 
+include 'config/conexion.php'; 
 $conn= conectarDB();
 
 session_start();
@@ -8,6 +8,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 header("Expires: 0");
 
+// print_r($_SESSION);
 // Validar que el usuario haya iniciado sesión
 if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
     header("Location: php/principal.php");
@@ -15,11 +16,11 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
 
 }
 
-    $sql = "SELECT * FROM usuarios";
-$resultado = $conn->query($sql);
+    $sql = "SELECT * FROM administrador";
+    $resultado = $conn->query($sql);
 
 if (!$resultado) {
-    die("Error al consultar usuarios: " . $conn->error);
+    die("Error al consultar administrador: " . $conn->error);
 }
 
 $tarifas = mysqli_query($conn, "
@@ -34,25 +35,7 @@ if (!$tarifas) {
   echo "<p>Error al consultar tarifas: " . mysqli_error($conn) . "</p>";
 }
 
-$informes = mysqli_query($conn, "
-  SELECT 
-  i.idINFORMES, 
-  i.NOMBRE, 
-  i.FECHA_CHECKIN, 
-  i.FECHA_CHECKOUT, 
-  i.NOCHES, 
-  i.DESAYUNO, 
-  i.SPA, 
-  i.TOTAL, 
-  h.NUMERO
-FROM informes AS i
-JOIN habitaciones AS h ON i.IDHABITACIONES = h.idHABITACIONES
-ORDER BY i.idINFORMES DESC;
 
-");
-if (!$informes) {
-  echo "<p>Error al consultar informes: " . mysqli_error($conn) . "</p>";
-}
 ?>
 
 
@@ -105,13 +88,13 @@ if (!$informes) {
                         <li><a  class="select-section-button">Lista de huespedes</a></li> 
                     </ul>
                 </li>
-  
+
                 <li>
                     <a href="php/logout.php"
                     class="select-section-button">Cerrar Sesion</a>
                 </li>
   
-                <li><a href="../php/logOut.php"  class=" flex nav-link px-2 py-1 font-bold text-white hover:bg-amber-500 hover:text-primary transition">Cerrar Sesion</a></li>
+                <li><a href="php/logOut.php"  class=" flex nav-link px-2 py-1 font-bold text-white hover:bg-amber-500 hover:text-primary transition">Cerrar Sesion</a></li>
 
             </ul>
         </nav>
@@ -311,7 +294,7 @@ if (!$informes) {
 
                     </div>
                     <button class="btn-buscar" >Buscar</button>
-                    <button>Agregar habitacion</button>
+                    
                 </div>
                 
                 <div class="table-container">

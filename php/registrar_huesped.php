@@ -3,7 +3,7 @@ include "../config/conexion.php";
 $conn = conectarDB();
 
 session_start();
-$returnto= $_SESSIOn["rol"]=="ADMIN" ? 'index' : 'panelEmpleado';
+$returnto= $_SESSION["rol"]=="ADMIN" ? 'index' : 'panelEmpleado';
 
 
 //DATOS: $_POST
@@ -44,8 +44,15 @@ if($resultado->num_rows == 0){
     $sql = "INSERT INTO `huesped` (`idHUESPED`, `NOMBRECOMPLETO`, `TIPODOCUMENTO`, `DOCUMENTO`, `TELEFONOHUESPED`,`EMAIL`, `OBSEVACIONES`) VALUES (NULL, '$nombre_completo', '$tipo_documento', '$numero_documento', '$telefono_cliente','$email_cliente',' $observaciones')";
 
     mysqli_query($conn,$sql);
+    
 
 }
+$sql = "SELECT * from huesped where TIPODOCUMENTO = '$tipo_documento' and DOCUMENTO = '$numero_documento'";
+
+    $huesped = mysqli_query($conn,$sql);
+    while($fila = mysqli_fetch_assoc($huesped)){
+        $id_huesped=$fila["idHUESPED"];
+    }
 
 
 //Si no tiene informacion sobre "PAGOS" cerrar la coneccion y retornar al index
@@ -81,7 +88,7 @@ else {
 
 }
 
-echo "<script>location.href = '../index.php?section=registro-de-pagos'</script>";
+echo "<script>location.href = '../$returnto.php?section=registro-de-pagos'</script>";
 
 
 ?>
