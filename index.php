@@ -17,7 +17,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
     exit();
 }
 
-    $sql = "SELECT * FROM usuarios";
+    $sql = "SELECT * FROM administrador";
 $resultado = $conn->query($sql);
 
     if (!$resultado) {

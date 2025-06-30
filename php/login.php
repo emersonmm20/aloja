@@ -1,12 +1,6 @@
 <?php
 
 include '../config/conexion.php';
-<<<<<<< HEAD
-session_start();
-if($_SERVER['REQUEST_METHOD']=="POST"){
-    $conn = conectarDB();
-=======
-
 
 session_start();
 // Impedir caché del navegador
@@ -19,11 +13,7 @@ if (isset($_SESSION['usuario'])) {
     exit();
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $usuario = $_POST['usuario'];
-    $password = $_POST['password'];
->>>>>>> 87a9adfa2d5c5a940642228ff49757c0ade27e98
-
-
+    $conn=conectarDB();
 
     $usuario = $_POST['usuario'];
     $password = md5($_POST['password']);
@@ -76,11 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $stmt->close();
     $conn->close();
-<<<<<<< HEAD
-        }
 
-?>
-=======
 }
 ?>
->>>>>>> 87a9adfa2d5c5a940642228ff49757c0ade27e98
+
