@@ -90,11 +90,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </select>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Noches</label>
-            <input type="number" name="noches" class="form-control" value="<?= $informe['NOCHES'] ?>" required>
-        </div>
-
         <div class="form-check mb-2">
             <input class="form-check-input" type="checkbox" name="desayuno" <?= !empty($informe['DESAYUNO']) ? 'checked' : '' ?>>
             <label class="form-check-label">Desayuno</label>

@@ -1,11 +1,57 @@
 <?php
-include 'config/conexion.php'; 
-$conn=conectarDB();
+include '../config/conexion.php'; 
+$conn= conectarDB();
 
 session_start();
+// Impedir caché del navegador
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+header("Expires: 0");
+
+// Validar que el usuario haya iniciado sesión
 if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
-    echo "<script>alert('Acceso denegado'); window.location.href='principal.php';</script>";
+    header("Location: php/principal.php");
     exit();
+
+}
+
+    $sql = "SELECT * FROM usuarios";
+$resultado = $conn->query($sql);
+
+if (!$resultado) {
+    die("Error al consultar usuarios: " . $conn->error);
+}
+
+$tarifas = mysqli_query($conn, "
+  SELECT t.idTARIFAS, h.NUMERO, t.CAPACIDAD, t.PRECIOPORNOCHE, t.DESCRIPCION
+  FROM tarifas t
+  JOIN habitaciones h ON t.idHABITACIONES = h.idHABITACIONES
+  ORDER BY t.idTARIFAS DESC
+  LIMIT 15
+");
+
+if (!$tarifas) {
+  echo "<p>Error al consultar tarifas: " . mysqli_error($conn) . "</p>";
+}
+
+$informes = mysqli_query($conn, "
+  SELECT 
+  i.idINFORMES, 
+  i.NOMBRE, 
+  i.FECHA_CHECKIN, 
+  i.FECHA_CHECKOUT, 
+  i.NOCHES, 
+  i.DESAYUNO, 
+  i.SPA, 
+  i.TOTAL, 
+  h.NUMERO
+FROM informes AS i
+JOIN habitaciones AS h ON i.IDHABITACIONES = h.idHABITACIONES
+ORDER BY i.idINFORMES DESC;
+
+");
+if (!$informes) {
+  echo "<p>Error al consultar informes: " . mysqli_error($conn) . "</p>";
 }
 ?>
 
@@ -64,6 +110,8 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
                     <a href="php/logout.php"
                     class="select-section-button">Cerrar Sesion</a>
                 </li>
+  
+                <li><a href="../php/logOut.php"  class=" flex nav-link px-2 py-1 font-bold text-white hover:bg-amber-500 hover:text-primary transition">Cerrar Sesion</a></li>
 
             </ul>
         </nav>

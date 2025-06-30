@@ -50,4 +50,24 @@
 
             showSection(sections[0].id);
         }
+
+        //administrar habitaciones
+function mostrarFormularioEditar(id) {
+    const fila = document.querySelector(`#acciones-habitacion-${id}`).closest('tr');
+    const numero = fila.children[0].innerText;
+    const capacidad = parseInt(fila.children[1].innerText);
+    const estado = fila.children[2].innerText.trim().toUpperCase().replace(" ", "_");
+
+    document.getElementById('editar-id-habitacion').value = id;
+    document.getElementById('editar-numero').value = numero;
+    document.getElementById('editar-capacidad').value = capacidad;
+    document.getElementById('editar-estado').value = estado;
+
+    document.getElementById('formulario-editar-habitacion').style.display = 'block';
+}
+
+function ocultarFormularioEditar() {
+    document.getElementById('formulario-editar-habitacion').style.display = 'none';
+}
+
     }

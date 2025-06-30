@@ -51,10 +51,7 @@ $habitaciones = mysqli_query($conn, "SELECT idHABITACIONES, NUMERO FROM habitaci
                 <?php endwhile; ?>
               </select>
             </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Noches</label>
-              <input type="number" name="noches" class="form-control" min="1" required>
-            </div>
+        
           </div>
 
           <div class="mb-3">
