@@ -5,8 +5,15 @@ $conn= conectarDB();
 
 
 session_start();
+
+// Impedir caché del navegador
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+header("Expires: 0");
+
+// Validar que el usuario haya iniciado sesión
 if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'ADMIN') {
-    echo "<script>alert('Acceso denegado'); window.location.href='principal.php';</script>";
+    header("Location: principal.php");
     exit();
 }
 
@@ -48,6 +55,8 @@ ORDER BY i.idINFORMES DESC;
 if (!$informes) {
   echo "<p>Error al consultar informes: " . mysqli_error($conn) . "</p>";
 }
+$habitaciones = mysqli_query($conn, "SELECT * FROM habitaciones ORDER BY NUMERO ASC");
+
 
 ?>
 
@@ -136,6 +145,7 @@ if (!$informes) {
                 </li>
   
                 <li class="nav-item"><a href="principal.php" class="nav-link text-white">Página principal</a></li>
+                <li><a href="./php/logOut.php"  class=" flex nav-link px-2 py-1 font-bold text-white hover:bg-amber-500 hover:text-primary transition">Cerrar Sesion</a></li>
 
             </ul>
         </nav>
@@ -235,46 +245,47 @@ if (!$informes) {
                 
                 <table class="table-container table">
                     <thead class="table-servicios thead-dark">
-                     <tr>
-                        <th scope="col">Servicio</th>
-                        <th scope="col">Descripción</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Imagen</th>
-                        <th scope="col">Acciones</th>
-                     </tr>
-                   </thead>
-                
-                   <tbody>
-                    <?php
-                    $servicios = mysqli_query($conn, "SELECT * from servicios");
-                    if (mysqli_num_rows($servicios) == 0) {
-                        echo "<tr><td colspan='5' class='text-center'>No hay servicios registrados.</td></tr>";
-                    }
-                    
-                    while ($fila = mysqli_fetch_assoc($servicios)) {
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nombre</th> <!-- NUEVO -->
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Detalle</th> <!-- NUEVO -->
+                            <th scope="col">Estado</th>
+                            <th scope="col">Imagen</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $servicios = mysqli_query($conn, "SELECT * FROM servicios");
+                        if (mysqli_num_rows($servicios) == 0) {
+                            
+                            echo "<tr><td colspan='7' class='text-center'>No hay servicios registrados.</td></tr>";
+                        }
+                        while ($fila = mysqli_fetch_assoc($servicios)) {
                         ?>
                         
                         <tr>
                             <td><?= htmlspecialchars($fila["idSERVICIOS"]) ?></td>
+                            <td><?= htmlspecialchars($fila["NOMBRE"]) ?></td>
                             <td><?= htmlspecialchars($fila["DESCRIPCION"]) ?></td>
+                            <td><?= htmlspecialchars($fila["DETALLE"]) ?></td>
                             <td><?= htmlspecialchars($fila["ESTADO"]) ?></td>
-                            <td>
-                                <?php if (!empty($fila["IMAGEN"])): ?>
-                                    <a href="recursos/imgs/<?= $fila["IMAGEN"] ?>" target="_blank" class="btn btn-sm btn-outline-secondary">Ver</a>
-                                    <?php else: ?>
-                                        <span class="text-muted">Sin imagen</span>
-                                        <?php endif; ?>
-                                    </td>
-
-                                    <td>
-                                        <a href="./php/editar_servicio.php?id=<?=$fila["idSERVICIOS"] ?>" class="btn btn-sm btn-warning">Editar</a>
-                                        <a href="./php/eliminar_servicio.php?id=<?= $fila["idSERVICIOS"] ?>" class="btn btn-sm btn-danger " onclick="return confirm('¿Seguro que deseas eliminar este servicio?');">Eliminar</a>
-                             </td>
-                        </tr>
-                        <?php
-                        }
-                        ?>
-                   </tbody>
+                        <td>
+                            <?php if (!empty($fila["IMAGEN"])): ?>
+                                <a href="recursos/promociones/<?= $fila["IMAGEN"] ?>" target="_blank" class="btn btn-sm btn-outline-secondary">Ver</a>
+                            <?php else: ?>
+                             <span class="text-muted">Sin imagen</span>
+                            <?php endif; ?>
+                        </td>
+                        
+                        <td>
+                         <a href="./php/editar_servicio.php?id=<?= $fila["idSERVICIOS"] ?>" class="btn btn-sm btn-warning">Editar</a>
+                         <a href="./php/eliminar_servicio.php?id=<?= $fila["idSERVICIOS"] ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que deseas eliminar este servicio?');">Eliminar</a>
+                       </td>
+                    </tr>
+                    <?php } ?>
+                 </tbody>
                 
                 </table>
             </div>
@@ -370,103 +381,106 @@ if (!$informes) {
             </div>
         </section>  
 
-        <section class="seccion" id="administrar-habitaciones">
-            <div class="title-section">
-                <h2>Administrar habitaciones</h2>
-            </div>
-            <div class="content-section">
-                <form class="filter">
-                    <div class="filter-inputs">
-                        <div class="filter-group">
-                            <label for="filtro-id-habitaciones">ID:</label>
-                            <input type="number" id="filtro-id-habitaciones" class="filter-ID" name="filtro-id-habitaciones" placeholder="">
-                        </div>
 
-                        <div class="filter-group">
-                            <label for="filtro-numero-habitaciones">Monto:</label>
-                            <input type="number" id="filtro-numero-habitaciones" name="filtro-numero-habitaciones" placeholder="">
-                        </div>
+            <!-- ADMINISTRAR HABITACIONES -->
+    <section class="seccion" id="administrar-habitaciones">
+  <div class="title-section">
+    <h2>Administrar habitaciones</h2>
+  </div>
 
-                        <div class="filter-group">
-                            <label for="filtro-capacidad-habitaciones">fecha inicio:</label>
-                            <input type="number" id="filtro-capacidad-habitaciones" name="filtro-capacidad-habitaciones" placeholder="">
-                        </div>
+  <div class="content-section">
+    <a href="./php/crear_habitacion.php" class="crear-habitacion-button btn btn-primary btn-lg btn-block bg-success">Crear Habitación</a>
+    <form class="filter">
+      <div class="filter-inputs">
+        <div class="filter-group">
+          <label for="filtro-id-habitaciones">ID:</label>
+          <input type="number" id="filtro-id-habitaciones" class="filter-ID" name="filtro-id-habitaciones" placeholder="">
+        </div>
 
-                        <div class="filter-group">
-                            <label for="filtro-estado-habitaciones">Fecha fin:</label>
-                            <select name="filtro-estado-habitaciones" id="filtro-estado-habitaciones">
-                                <option value="">Seleccionar estado</option>
-                                <!-- ENUM('OCUPADA', 'DESOCUPADA', 'FUERA_DE_SERVICIO') -->
-                                <option value="OCUPADA">Ocupada</option>
-                                <option value="DESOCUPADA">Desocupada</option>
-                                <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
-                            </select>
-                        </div>
+        <div class="filter-group">
+          <label for="filtro-numero-habitaciones">Monto:</label>
+          <input type="number" id="filtro-numero-habitaciones" name="filtro-numero-habitaciones" placeholder="">
+        </div>
 
-                        <!-- Elementos NO encapsulados -->
-                        <input type="hidden" value="tabla-habitaciones" name="form">
-                        <button class="btn-buscar" type="submit">Buscar</button>
-                        <button>Agregar habitacion</button>
-                    </div>
-                </form>
-            
-                
-                <div class="table-container">
-                    <table class="tabla-pagos table">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">Numero</th>
-                                <th scope="col">Capacidad</th>
-                                <th scope="col">Estado</th>
-                                <th scope="col" class="tabla-acciones">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody class="registros-tabla" id="tabla-habitaciones">
-                            <?php
-                            $habitaciones = mysqli_query($conn, "SELECT * from habitaciones");
-                            while($fila=mysqli_fetch_assoc($habitaciones)){
-                                $id=$fila["idHABITACIONES"];
+        <div class="filter-group">
+          <label for="filtro-capacidad-habitaciones">Fecha inicio:</label>
+          <input type="number" id="filtro-capacidad-habitaciones" name="filtro-capacidad-habitaciones" placeholder="">
+        </div>
 
-                                ?>
-                                <tr>
-                                    <td><?=$fila["NUMERO"] ?></td>
-                                    <td><?=$fila["CAPACIDAD"] ?> Personas</td>
-                                    <td id=<?="estado-habitacion-$id"?>><?=str_replace("_", " ", $fila["ESTADO"])?></td>
-                                    <td id=<?="acciones-habitacion-" . $id?>>
-                                        <button 
-                                        class="btn-estado-habitacion"
-                                        id=<?="cambiar-estado-boton-$id"?>
-                                        value=<?=$id?> onclick=<?="mostrarSelectHabitaciones($id)"?> >Cambiar Estado</button>
-                                        <div id=<?="select-estado-habitacion-$id"?>
-                                             class="select-estado-habitacion rounded">
-                                            <select id=<?="nuevo-estado-habitacion-$id" ?> class="select-table">
-                                                <option value="">Selecciona Estado</option>
-                                                <option value="OCUPADA">Ocupada</option>
-                                                <option value="DESOCUPADA">Desocupada</option>
-                                                <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
-                                            </select>
-                                            <button class="actualizar-estado-habitacion bg-success text-light btn btn-success"
-                                            onclick=<?="enviarYActualizar($id)"?>
-                                            value=<?=$id?>>Modificar</button>
-                                            <button class="cancelar-estado btn btn-danger" value=<?=$id?>>X</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                
-                            
-                            <?php
-                            }
-                            ?>
-                        
-                            <!-- Los registros se cargarán dinámicamente -->
-                            <tr>
-                                <td colspan="8" class="sin-registros">No hay más habitaciones</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>  
+        <div class="filter-group">
+          <label for="filtro-estado-habitaciones">Fecha fin:</label>
+          <select name="filtro-estado-habitaciones" id="filtro-estado-habitaciones">
+            <option value="">Seleccionar estado</option>
+            <option value="OCUPADA">Ocupada</option>
+            <option value="DESOCUPADA">Desocupada</option>
+            <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
+          </select>
+        </div>
+
+        <input type="hidden" value="tabla-habitaciones" name="form">
+        <button class="btn-buscar" type="submit">Buscar</button>
+        <button type="button">Agregar habitación</button>
+      </div>
+    </form>
+
+    <div class="table-container">
+      <table class="tabla-pagos table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Número</th>
+            <th scope="col">Capacidad</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Imagen</th>
+            <th scope="col" class="tabla-acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="registros-tabla" id="tabla-habitaciones">
+          <?php
+          $habitaciones = mysqli_query($conn, "SELECT * FROM HABITACIONES");
+
+          if (mysqli_num_rows($habitaciones) > 0):
+            while ($fila = mysqli_fetch_assoc($habitaciones)):
+              $id = $fila["idHABITACIONES"];
+          ?>
+              <tr>
+                <td><?= $fila["NUMERO"] ?></td>
+                <td><?= $fila["CAPACIDAD"] ?> Personas</td>
+                <td id="estado-habitacion-<?= $id ?>"><?= str_replace("_", " ", $fila["ESTADO"]) ?></td>
+                <td><?= !empty($fila["DESCRIPCION"]) ? $fila["DESCRIPCION"] : 'Sin descripción' ?></td>
+                <td>$<?= number_format($fila["PRECIO"], 0, ',', '.') ?> COP</td>
+                <td>
+                  <?php if (!empty($fila["IMAGEN"])): ?>
+                    <a href="./recursos/habitaciones/<?= $fila["IMAGEN"] ?>" target="_blank" class="btn btn-sm btn-outline-secondary">Ver</a>
+                  <?php else: ?>
+                    <span class="text-muted">Sin imagen</span>
+                  <?php endif; ?>
+                </td>
+                <td>
+                    <a href="./php/form_editar_habitacion.php?id=<?= $id ?>" class="btn btn-primary btn-sm">Editar</a>
+                    <!-- <a href="./php/eliminar_habitacion.php?id=<?= $id ?>" onclick="return confirm('¿Seguro que deseas eliminar esta habitación?');" class="btn btn-sm btn-danger">Eliminar</a> -->
+
+                  </div>
+                </td>
+              </tr>
+          <?php
+            endwhile;
+          else:
+          ?>
+            <tr>
+              <td colspan="6" class="text-center text-muted">No hay habitaciones registradas.</td>
+            </tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+
+         <!-- Lista de Huespedes -->
         <section class="seccion" id="lista-de-huespedes">
             <div class="title-section">
             <h2>Lista de Huéspedes</h2>
@@ -842,6 +856,7 @@ if (!$informes) {
 
   <a href="./php/crear_informe.php" class="btn btn-primary mb-3">Nuevo Informe</a>
 
+
   <div class="content-section">
      <div class="table-container">
       <table class="table-informe">
@@ -852,7 +867,6 @@ if (!$informes) {
             <th>Check-in</th>
             <th>Check-out</th>
             <th>Numero de Habitación</th>
-            <th>Noches</th>
             <th>Servicios</th>
             <th>Total</th>
             <th>Acciones</th>
@@ -870,7 +884,6 @@ if (!$informes) {
           <td><?= $fila['FECHA_CHECKIN'] ?></td>
           <td><?= $fila['FECHA_CHECKOUT'] ?></td>
           <td><?= $fila['NUMERO'] ?></td>
-          <td><?= $fila['NOCHES'] ?></td>
           <td>
               <?= $fila['DESAYUNO'] ? 'Desayuno<br>' : '' ?>
               <?= $fila['SPA'] ? 'Spa' : '' ?>
@@ -879,6 +892,7 @@ if (!$informes) {
           <td>
               <a href="./php/editar_informe.php?id=<?= $fila['idINFORMES'] ?>" class="btn btn-info btn-sm">Editar</a>
               <a href="./php/eliminar_informe.php?id=<?= $fila['idINFORMES'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este informe?')">Eliminar</a>
+              <a href="./php/descargar_informes.php?id=<?= $fila['idINFORMES'] ?>" class="btn btn-success btn-sm">Descargar PDF</a>
           </td>
       </tr>
   <?php 

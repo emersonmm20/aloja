@@ -13,6 +13,10 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8mb3 ;
 USE `mydb` ;
+SHOW COLUMNS FROM HABITACIONES LIKE 'DESCRIPCION';
+
+
+
 
 -- -----------------------------------------------------
 -- Table `mydb`.`administrador`
@@ -65,6 +69,17 @@ CREATE TABLE IF NOT EXISTS `mydb`.`habitaciones` (
   PRIMARY KEY (`idHABITACIONES`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
+ALTER TABLE habitaciones 
+ADD COLUMN  IF NOT EXISTS DESCRIPCION TEXT,
+ADD COLUMN PRECIO DECIMAL(10,2);
+SELECT * FROM habitaciones WHERE ESTADO != 'FUERA_DE_SERVICIO';
+
+
+
+
+
+
+
 
 
 -- -----------------------------------------------------
@@ -195,10 +210,12 @@ JOIN habitaciones h ON t.idHABITACIONES = h.idHABITACIONES
 -- Table `mydb`.`servicios`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`. `servicios` (
-    idSERVICIOS VARCHAR(100) NOT NULL PRIMARY KEY,
-    DESCRIPCION TEXT,
-    ESTADO VARCHAR(50),
-    IMAGEN VARCHAR(255)
+  idSERVICIOS INT AUTO_INCREMENT PRIMARY KEY,
+  NOMBRE VARCHAR(100), -- nuevo campo para mostrar como título (ej. "Escapada Romántica")
+  DESCRIPCION TEXT,     -- para el párrafo visible
+  DETALLE TEXT,         -- para el texto que se muestra en el modal
+  ESTADO VARCHAR(20),
+  IMAGEN VARCHAR(255)
 );
 
 -- -----------------------------------------------------
@@ -279,5 +296,6 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
 
+USE `mydb` ;
 
-
+DROP TABLE IF EXISTS servicios;

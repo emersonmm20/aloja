@@ -2,7 +2,17 @@
 
 include '../config/conexion.php';
 
+
 session_start();
+// Impedir caché del navegador
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+header("Expires: 0");
+
+if (isset($_SESSION['usuario'])) {
+    header("Location: ../index.php");
+    exit();
+}
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $usuario = $_POST['usuario'];
     $password = $_POST['password'];

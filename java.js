@@ -81,32 +81,21 @@ function buscar() {
 
 
 
-//Modal Promociones
+
+
+// Modal Promociones con datos dinámicos
 function mostrarModal(tipo) {
-  let titulo = "";
-  let contenido = "";
+  const data = window.detallesPromociones[tipo];
+  if (!data) return;
 
-  switch (tipo) {
-    case "familiar":
-      titulo = "Aloja Familiar";
-      contenido = "Descuento especial en desayunos para familias con niños. Disponible solo fines de semana.";
-      break;
-    case "mascotas":
-      titulo = "Mascotas de la casa";
-      contenido = "Hospedaje amigable con mascotas, sin costo adicional. Incluye camita, comedero y snack.";
-      break;
-    case "romantica":
-      titulo = "Escapada Romántica";
-      contenido = "Habitación decorada con velas y pétalos, desayuno en la cama y botella de vino incluida.";
-      break;
-  }
+  document.getElementById("infoModalLabel").textContent = data.titulo;
+  document.getElementById("modalBody").textContent = data.detalle;
 
-  document.getElementById("infoModalLabel").textContent = titulo;
-  document.getElementById("modalBody").textContent = contenido;
-
-  let modal = new bootstrap.Modal(document.getElementById('infoModal'));
+  const modal = new bootstrap.Modal(document.getElementById('infoModal'));
   modal.show();
 }
+
+
 
 
 //Modal Habitaciones
@@ -183,5 +172,6 @@ function agregarComentario() {
 }
 
 window.onload = cargarComentarios;
+
 
   

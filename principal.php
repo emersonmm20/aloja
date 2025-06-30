@@ -2,8 +2,31 @@
 include 'config/conexion.php';
 $conn = conectarDB();
 
+// Validar que el usuario haya iniciado sesión
+if (isset($_SESSION['usuario'])) {
+    // Redirige según rol
+    if ($_SESSION['rol'] == 'ADMIN') {
+        header("Location: index.php");
+    } elseif ($_SESSION['rol'] == 'EMPLEADO') {
+        header("Location: ../php/panelEmpleado.php");
+    }
+    exit();
+}
+
 $sql = "SELECT * FROM HABITACIONES";
 $result = $conn->query($sql);
+
+// Consulta habitaciones disponibles
+$query = "SELECT * FROM habitaciones WHERE ESTADO != 'FUERA_DE_SERVICIO' ORDER BY idHABITACIONES ASC";
+$resultado = mysqli_query($conn, $query);
+
+$habitaciones = [];
+if ($resultado && mysqli_num_rows($resultado) > 0) {
+  while ($fila = mysqli_fetch_assoc($resultado)) {
+    $habitaciones[] = $fila;
+  }
+
+}
 ?>
 
 <!DOCTYPE html>
@@ -120,76 +143,113 @@ $result = $conn->query($sql);
   </section>
 
      
+<!-- PROMOCIONES -->
+<section id="promociones" class="py-8 px-4">
+  <h2 class="sub-title text-3xl text-center text-amber-800 mb-6"><strong>Promociones</strong></h2>
+  <div class="flex flex-wrap justify-center gap-6">
 
-      <!-- PROMOCIONES -->
-      <section id="promociones" class="py-8 px-4">
-        <h2 class="sub-title text-3xl text-center text-amber-800 mb-6"><strong>Promociones</strong></h2>
-        <div class="flex flex-wrap justify-center gap-6">
-          <!-- Promo Familiar -->
-          <div class="promocion bg-white bg-opacity-50 rounded-2xl p-4 text-center transition hover:bg-white">
-            <img src="recursos/promociones/familiar.jpeg"
-                 alt="Aloja Familiar"
-                 class="w-full h-48 object-cover rounded-xl mb-4">
-            <h3 class="text-xl font-bold text-amber-800 mb-2">Aloja Familiar</h3>
-            <p class="text-gray-800 mb-4">Descuento en desayunos familiares para los pequeños</p>
-            <button onclick="mostrarModal('familiar')"
-                    class="bg-amber-800 text-white px-4 py-2 rounded-full border border-accent transition hover:bg-amber-500 hover:text-primary">Saber más</button>
-          </div>
-          <!-- Promo Mascotas -->
-          <div class="promocion bg-white bg-opacity-50 rounded-2xl p-4 text-center transition hover:bg-white">
-            <img src="recursos/promociones/The 9 Most Pet-Friendly Hotels in the US.jpeg"
-                 alt="Mascotas de la casa"
-                 class="w-full h-48 object-cover rounded-xl mb-4">
-            <h3 class="text-xl font-bold text-amber-800 mb-2">Mascotas de la casa</h3>
-            <p class="text-gray-800 mb-4">Pasa tiempo de calidad con los peludos sin preocuparte</p>
-            <button onclick="mostrarModal('mascotas')"
-                    class="bg-amber-800 text-white px-4 py-2 rounded-full border border-accent transition hover:bg-amber-500 hover:text-primary">Saber más</button>
-          </div>
-          <!-- Promo Romántica -->
-          <div class="promocion bg-white bg-opacity-50 rounded-2xl p-4 text-center transition hover:bg-white">
-            <img src="recursos/promociones/Romantic bedroom.jpeg"
-                 alt="Escapada Romántica"
-                 class="w-full h-48 object-cover rounded-xl mb-4">
-            <h3 class="text-xl font-bold text-amber-800 mb-2">Escapada Romántica</h3>
-            <p class="text-gray-800 mb-4">Decoración especial y desayuno incluido para parejas</p>
-            <button onclick="mostrarModal('romantica')"
-                    class="bg-amber-800 text-white px-4 py-2 rounded-full border border-accent transition hover:bg-amber-500 hover:text-primary">Saber más</button>
-          </div>
-        </div>
-      </section>
+    <?php
+  
+    $consulta = "SELECT * FROM servicios WHERE ESTADO = 'activo'";
+    $resultado = mysqli_query($conn, $consulta);
 
-      <!-- Sección del Carrusel de Habitaciones -->
+    while ($servicio = mysqli_fetch_assoc($resultado)) {
+      $id = htmlspecialchars($servicio['idSERVICIOS']);
+      $nombre = htmlspecialchars($servicio['NOMBRE']);
+      $descripcion = htmlspecialchars($servicio['DESCRIPCION']);
+      $detalle = htmlspecialchars($servicio['DETALLE']);
+      $imagen = !empty($servicio['IMAGEN']) ? "recursos/promociones/{$servicio['IMAGEN']}" : "recursos/promociones/default.jpg";
+    ?>
+      <div class="promocion bg-white bg-opacity-50 rounded-2xl p-4 text-center transition hover:bg-white w-full sm:w-72">
+        <img src="<?= $imagen ?>" alt="<?= $nombre ?>" class="w-full h-48 object-cover rounded-xl mb-4">
+        <h3 class="text-xl font-bold text-amber-800 mb-2"><?= $nombre ?></h3>
+        <p class="text-gray-800 mb-4"><?= $descripcion ?></p>
+        <button onclick="mostrarModal('<?= $id ?>')"
+          class="bg-amber-800 text-white px-4 py-2 rounded-full border border-accent transition hover:bg-amber-500 hover:text-primary">
+          Saber más
+        </button>
+      </div>
+
+      <!-- Guardar detalle para el modal -->
+      <script>
+        window.detallesPromociones = window.detallesPromociones || {};
+        window.detallesPromociones["<?= $id ?>"] = {
+          titulo: "<?= $nombre ?>",
+          detalle: "<?= $detalle ?>"
+        };
+      </script>
+    <?php } ?>
+
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-white rounded-xl shadow-lg">
+      <div class="modal-header">
+        <h5 class="modal-title" id="infoModalLabel">Título</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-gray-700" id="modalBody">
+        Detalles del servicio o promoción.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT para mostrar modal -->
+<script>
+  function mostrarModal(id) {
+    const data = window.detallesPromociones[id];
+    if (data) {
+      document.getElementById("infoModalLabel").textContent = data.titulo;
+      document.getElementById("modalBody").textContent = data.detalle;
+
+      const modal = new bootstrap.Modal(document.getElementById('infoModal'));
+      modal.show();
+    }
+  }
+</script>
+                
+  
+
+
+
+
+
+
+
+<!-- Sección del Carrusel de Habitaciones -->
 <section id="habitaciones" class="py-5">
   <div class="container">
-    <h2 class=" sub-title text-center  text-3xl text-amber-800 mb-4"><strong>Nuestras Habitaciones</strong></h2>
+    <h2 class="sub-title text-center text-3xl text-amber-800 mb-4"><strong>Nuestras Habitaciones</strong></h2>
 
     <div id="carouselHabitaciones" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
-
-        <!-- Habitación 1 -->
-        <div class="carousel-item active">
-          <div class="d-flex justify-content-center">
-            <img src="recursos/habitaciones/habitacion1.jpg" class="d-block img-fluid w-50 rounded shadow " alt="Habitación 1" data-bs-toggle="modal" data-bs-target="#modalHabitacion1">
+        <?php
+        $first = true;
+        foreach ($habitaciones as $hab):
+          $imagen = !empty($hab['IMAGEN']) ? 'img/habitaciones/' . htmlspecialchars($hab['IMAGEN']) : 'img/default.jpg';
+        ?>
+          <div class="carousel-item <?= $first ? 'active' : '' ?>">
+            <div class="d-flex justify-content-center">
+              <img src="<?= $imagen ?>" 
+                   class="d-block img-fluid w-50 rounded shadow"
+                   alt="Habitación <?= htmlspecialchars($hab['NUMERO']) ?>" 
+                   data-bs-toggle="modal" 
+                   data-bs-target="#modalHabitacion<?= $hab['idHABITACIONES'] ?>">
+            </div>
           </div>
-        </div>
-
-        <!-- Habitación 2 -->
-        <div class="carousel-item">
-          <div class="d-flex justify-content-center">
-            <img src="recursos/habitaciones/habitacion familiar.jpeg" class="d-block img-fluid w-50 rounded shadow" alt="Habitación 2" data-bs-toggle="modal" data-bs-target="#modalHabitacion2">
-          </div>
-        </div>
-
-        <!-- Habitación 3 -->
-        <div class="carousel-item">
-          <div class="d-flex justify-content-center">
-            <img src="recursos/habitaciones/habitacion 3.jpeg" class="d-block img-fluid w-50 rounded shadow" alt="Habitación 3" data-bs-toggle="modal" data-bs-target="#modalHabitacion3">
-          </div>
-        </div>
-
+        <?php
+        $first = false;
+        endforeach;
+        ?>
       </div>
 
-      <!-- Controles -->
       <button class="carousel-control-prev" type="button" data-bs-target="#carouselHabitaciones" data-bs-slide="prev">
         <span class="carousel-control-prev-icon"></span>
       </button>
@@ -202,106 +262,34 @@ $result = $conn->query($sql);
 
 <!-- Sección de Modales -->
 <section id="modales">
-  <!-- Modal Habitación 1 -->
-  <div class="modal fade" id="modalHabitacion1" tabindex="-1" aria-labelledby="modalHabitacion1Label" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content p-4">
-        <div class="modal-header">
-          <h5 class="modal-title">Habitación Deluxe</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body row">
-          <div class="col-md-5">
-            <img src="recursos/habitaciones/habitacion1.jpg" class="img-fluid rounded" alt="Habitación Deluxe">
+  <?php foreach ($habitaciones as $hab): 
+    $imagen = !empty($hab['IMAGEN']) ? 'img/habitaciones/' . htmlspecialchars($hab['IMAGEN']) : 'img/default.jpg';
+    $descripcion = !empty($hab['DESCRIPCION']) ? htmlspecialchars($hab['DESCRIPCION']) : 'Sin descripción disponible';
+    $precio = isset($hab['PRECIO']) ? number_format($hab['PRECIO']) : '0';
+  ?>
+    <div class="modal fade" id="modalHabitacion<?= $hab['idHABITACIONES'] ?>" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Habitación <?= htmlspecialchars($hab['NUMERO']) ?></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
-          <div class="col-md-7">
-            <p><strong>Descripción:</strong> Habitación con cama king, aire acondicionado y balcón.</p>
-            <p><strong>Servicios incluidos:</strong></p>
-            <ul>
-              <li>WiFi</li>
-              <li>TV Smart</li>
-              <li>Mini bar</li>
-              <li>Servicio a la habitación</li>
-              <li>Baño privado</li>
-            </ul>
-            <p class="text-center"><strong>Precio: </strong>$700.000 COP/noche</p>
-            
+          <div class="modal-body row">
+            <div class="col-md-5">
+              <img src="<?= $imagen ?>" class="img-fluid rounded" alt="Habitación <?= htmlspecialchars($hab['NUMERO']) ?>">
+            </div>
+            <div class="col-md-7">
+              <p><strong>Descripción:</strong> <?= $descripcion ?></p>
+              <p><strong>Capacidad:</strong> <?= htmlspecialchars($hab['CAPACIDAD']) ?> personas</p>
+              <p><strong>Estado:</strong> <?= htmlspecialchars($hab['ESTADO']) ?></p>
+              <p class="text-center"><strong>Precio:</strong> $<?= $precio ?> COP/noche</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Modal Habitación 2 -->
-  <div class="modal fade" id="modalHabitacion2" tabindex="-1" aria-labelledby="modalHabitacion2Label" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content p-4">
-        <div class="modal-header">
-          <h5 class="modal-title">Habitación Familiar</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body row">
-          <div class="col-md-5">
-            <img src="recursos/habitaciones/habitacion familiar.jpeg" class="img-fluid rounded" alt="Habitación Familiar">
-          </div>
-          <div class="col-md-7">
-            <p><strong>Descripción:</strong> Dos camas dobles, zona de estar y aire acondicionado.</p>
-            <p><strong>Servicios incluidos:</strong></p>
-            <ul>
-              <li>WiFi gratis</li>
-              <li>Baño privado</li>
-              <li>Limpieza diaria</li>
-              <li>Televisor LED</li>
-              <li>Escritorio</li>
-            </ul>
-            <p class="text-center"><strong>Precio: </strong>$900.000 COP/noche</p>
-           
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Habitación 3 -->
-  <div class="modal fade" id="modalHabitacion3" tabindex="-1" aria-labelledby="modalHabitacion3Label" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content p-4">
-        <div class="modal-header">
-          <h5 class="modal-title">Suite Nupcial</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body row">
-          <div class="col-md-5">
-            <img src="recursos/habitaciones/habitacion 3.jpeg" class="img-fluid rounded" alt="Suite Nupcial">
-          </div>
-          <div class="col-md-7">
-            <p><strong>Descripción:</strong> Suite con jacuzzi, iluminación romántica y decoración especial.</p>
-            <p><strong>Servicios incluidos:</strong></p>
-            <ul>
-              <li>Jacuzzi privado</li>
-              <li>Decoración especial</li>
-              <li>WiFi premium</li>
-              <li>Botella de vino</li>
-              <li>Desayuno a la habitación</li>
-            </ul>
-            <p class="text-center"><strong>Precio: </strong>$950.000 COP/noche</p>
-            
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <?php endforeach; ?>
 </section>
-
-
- <!-- SOBRE NOSOTROS -->
-      <section id="nosotros" class="py-8 px-4 bg-[rgba(192,164,164,0.6)] rounded-2xl mx-4 mb-8 text-center">
-        <h2 class="text-3xl text-center text-amber-800 mb-6"><strong>🌴 Sobre Nosotros – Hotel Aloha</strong></h2>
-        <p class="text-white text-base leading-relaxed max-w-3xl mx-auto">
-          En Hotel Aloha, convertimos cada estadía en una experiencia única junto al mar. Con más de 10 años de trayectoria, nos enorgullece brindar a nuestros huéspedes un ambiente de hospitalidad, confort y atención personalizada.Ubicados en un entorno privilegiado frente al océano, combinamos el encanto natural del paisaje con instalaciones modernas y servicios de alta calidad. Nuestro equipo está comprometido con crear recuerdos inolvidables, ya sea que vengas a descansar, celebrar o explorar.
-          Cada detalle está pensado para que vivas unas vacaciones excepcionales, donde el relax, la calidez y el buen gusto se unen para hacerte sentir como en casa... pero con vista al mar.
-        </p>
-      </section>
 
 
  <!-- UBICACIÓN -->

@@ -1,4 +1,35 @@
-<?php include '../config/conexion.php'; ?>
+<?php
+include '../config/conexion.php'; 
+$conn = conectarDB();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nombre = $_POST["nombre"];
+    $descripcion = $_POST["descripcion"];
+    $detalle = $_POST["detalle"];
+    $estado = $_POST["estado"];
+
+    // Guardar imagen
+    $imagen = "";
+    if (!empty($_FILES["imagen"]["name"])) {
+        $imagen = basename($_FILES["imagen"]["name"]);
+        $rutaDestino = "../recursos/promociones/" . $imagen;
+        move_uploaded_file($_FILES["imagen"]["tmp_name"], $rutaDestino);
+    }
+
+    $query = "INSERT INTO servicios (NOMBRE, DESCRIPCION, DETALLE, ESTADO, IMAGEN)
+              VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("sssss", $nombre, $descripcion, $detalle, $estado, $imagen);
+    
+    if ($stmt->execute()) {
+        header("Location: ../index.php");
+        exit();
+    } else {
+        echo "Error al guardar el servicio.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,28 +39,32 @@
 </head>
 <body class="container mt-5">
     <h2>Nuevo Servicio</h2>
-    <form action="./guardar_servicio.php" method="POST" enctype="multipart/form-data">
+    <form action="crear_servicio.php" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
             <label class="form-label">Nombre del servicio:</label>
-            <input type="text" name="idSERVICIOS" class="form-control" required>
+            <input type="text" name="nombre" class="form-control" required>
         </div>
         <div class="mb-3">
             <label class="form-label">Descripción:</label>
-            <textarea name="DESCRIPCION" class="form-control" required></textarea>
+            <textarea name="descripcion" class="form-control" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Detalle para el modal:</label>
+            <textarea name="detalle" class="form-control" required></textarea>
         </div>
         <div class="mb-3">
             <label class="form-label">Estado:</label>
-            <select name="ESTADO" class="form-select">
+            <select name="estado" class="form-select">
                 <option value="Activo">Activo</option>
                 <option value="Inactivo">Inactivo</option>
             </select>
         </div>
         <div class="mb-3">
-            <label class="form-label">Imagen (JPG):</label>
-            <input type="file" name="IMAGEN" class="form-control">
+            <label class="form-label">Imagen:</label>
+            <input type="file" name="imagen" class="form-control">
         </div>
-        <button type="submit" class="btn btn-primary">Guardar Servicio</button>
-        <a href="index.php/" class="btn btn-secondary">Volver</a>
+        <button type="submit" class="btn btn-success">Guardar Servicio</button>
+        <a href="../index.php" class="btn btn-secondary">Volver</a>
     </form>
 </body>
 </html>
