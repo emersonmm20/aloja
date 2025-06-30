@@ -4,19 +4,18 @@ Array.from(document.getElementsByClassName("filter")).forEach(filter=>{
         e.preventDefault()
     })
 })
-// HUESPEDES----------------------------------
 function filtroHuespedes() {
-    // Mostrar loading
+
     $('#tabla-huespedes tbody').html('<tr><td colspan="8" class="text-center">Cargando resultados...</td></tr>');
 
-    // Obtener valores del formulario
+
     const filtros = {
         nombre: $('#filtro-nombre').val(),
         documento: $('#filtro-numero-documento').val(),
         tipo_documento: $('#filtro-documento').val()
     };
 
-    // Enviar petición AJAX
+
     $.ajax({
         url: 'js/filtrar_huespedes.php',
         type: 'POST',
@@ -36,34 +35,33 @@ function filtroHuespedes() {
 }
 
 function limpiarFiltros() {
-    // Limpiar campos del formulario
+
     $('.filter')[0].reset();
     
-    // Volver a cargar los resultados
+
     filtrarHuespedes();
 }
 
 function actualizarTabla(data) {
     const $tbody = $('#tabla-huespedes'); 
     $tbody.empty();
-
     if (data.length === 0) {
         $tbody.html('<tr><td colspan="8" class="text-center">No se encontraron resultados</td></tr>');
         return;
     }
 
-    // Generar filas de la tabla según la estructura requerida
+
     data.forEach(huesped => {
         const $tr = $('<tr>');
         
-        // ID
+    
         $tr.append($('<td>').text(huesped.idHUESPED));
         
         $tr.append($('<td>').text(huesped.NOMBRECOMPLETO));
         
         $tr.append($('<td>').text(huesped.TIPODOCUMENTO));
         
-        // Documento
+    
         $tr.append($('<td>').text(huesped.DOCUMENTO));
         
         $tr.append($('<td>').text(huesped.TELEFONOHUESPED || ''));
@@ -73,24 +71,23 @@ function actualizarTabla(data) {
         $tr.append($('<td>').text(huesped.OBSEVACIONES || ''));
         
     
-        $tr.append($('<td>').html('<button>ACCION</button>'));
+        $tr.append($('<td>').html(`<a href="php/editar_huesped.php?id=${huesped.idHUESPED}" class="btn  btn-primary">Editar</a>`));
         $tbody.append($tr);
     });
 }
 
-// ESTADIAS----------------------------------
 function filtrarEstadias() {
-    // Mostrar loading
+
     $('#tabla-estadias tbody').html('<tr><td colspan="8" class="text-center">Cargando resultados...</td></tr>');
 
-    // Obtener valores del formulario
+
     const filtros = {
         fecha_inicio: $('#filtro-inicio-estadia').val(),
         fecha_fin: $('#filtro-fin-estadia').val(),
         habitacion: $('#filtro-habitacion-estadia').val()
     };
 
-    // Enviar petición AJAX
+
     $.ajax({
         url: 'js/filtrar_estadias.php',
         type: 'POST',
@@ -110,10 +107,10 @@ function filtrarEstadias() {
 }
 
 function limpiarFiltrosEstadias() {
-    // Limpiar campos del formulario
+
     $('.filter')[0].reset();
     
-    // Volver a cargar los resultados
+
     filtrarEstadias();
 }
 
@@ -127,31 +124,31 @@ function actualizarTablaEstadias(data) {
     }
 
 
-    // Generar filas de la tabla según la estructura requerida
+
     data.forEach(estadia => {
         const $tr = $('<tr>');
         
-        // ID
+    
         $tr.append($('<td>').text(estadia.idESTADIA || ''));
         
-        // Fecha Inicio
+    
         $tr.append($('<td>').text(estadia.FECHA_INICIO || ''));
         
-        // Fecha Fin
+    
         $tr.append($('<td>').text(estadia.FECHA_FIN || ''));
         
-        // Fecha Registro
+    
         $tr.append($('<td>').text(estadia.FECHA_REGISTRO || ''));
         
-        // Costo
+    
         $tr.append($('<td>').text(estadia.COSTO || ''));
         
-        // Habitación (se necesita consulta adicional como en tu PHP)
-        // Como estamos recibiendo datos del filtro, necesitaríamos:
-        // 1. Que el backend incluya el número de habitación en la respuesta, o
-        // 2. Hacer una llamada AJAX adicional para obtener el número
+    
+    
+    
+    
         
-        // Opción temporal (mostrar ID de habitación)
+    
         
         $tbody.append($tr);
     });
@@ -161,10 +158,10 @@ function mostrarErrorEstadias(mensaje) {
     $('#tabla-estadias tbody').html('<tr><td colspan="8" class="text-center error">'+mensaje+'</td></tr>');
 }
 function filtrarPagos() {
-    // Mostrar loading
+
     $('#registros-pagos').html('<tr><td colspan="6" class="text-center">Cargando resultados...</td></tr>');
 
-    // Obtener valores del formulario
+
     const filtros = {
         id_pago: $('#id-pago').val(),
         monto: $('#monto-pago').val(),
@@ -173,7 +170,7 @@ function filtrarPagos() {
         huesped: $('#huesped-pago').val()
     };
 
-    // Enviar petición AJAX
+
     $.ajax({
         url: 'js/filtrar_pagos.php',
         type: 'POST',
@@ -201,7 +198,7 @@ function actualizarTablaPagos(data) {
         return;
     }
 
-    // Generar filas de la tabla
+
     data.forEach(pago => {
         const $tr = $('<tr>')
             .append($('<td>').text(pago.idPAGOS || ''))
@@ -216,7 +213,7 @@ function actualizarTablaPagos(data) {
         $tbody.append($tr);
     });
 
-    // Agregar fila de "no más registros"
+
     $tbody.append('<tr><td colspan="6" class="sin-registros">No hay más registros que mostrar</td></tr>');
 }
 
@@ -225,22 +222,21 @@ function mostrarErrorPagos(mensaje) {
     $tbody.html(`<tr><td colspan="6" class="text-center text-danger">${mensaje}</td></tr>`);
 }
 
-// Función para limpiar filtros (opcional)
 function limpiarFiltrosPagos() {
     $('.filter')[0].reset();
-    filtrarPagos(); // Vuelve a cargar los datos sin filtros
+
 }
 function filtrarCancelaciones() {
-    // Mostrar loading
+
     $('.table-cancelacion tbody').html('<tr><td colspan="10" class="text-center">Cargando resultados...</td></tr>');
 
-    // Obtener valores del formulario
+
     const filtros = {
         id: $('#filtro-id').val(),
         estado: $('#filtro-estado').val()
     };
 
-    // Enviar petición AJAX
+
     $.ajax({
         url: 'js/filtrar_cancelaciones.php',
         type: 'POST',
@@ -268,7 +264,7 @@ function actualizarTablaCancelaciones(data) {
         return;
     }
 
-    // Generar filas de la tabla
+
     data.forEach(cancelacion => {
         const $tr = $('<tr>')
             .append($('<td>').text(cancelacion.idCANCELACION || ''))
@@ -302,10 +298,10 @@ function limpiarFiltrosCancelaciones() {
 }
 
 function filtrarAdministradores() {
-    // Mostrar loading
+
     $('.table-administrador tbody').html('<tr><td colspan="6" class="text-center">Cargando resultados...</td></tr>');
 
-    // Obtener valores del formulario
+
     const filtros = {
         id: $('#filtro-id').val(),
         nombre: $('#filtro-nombre').val(),
@@ -314,7 +310,7 @@ function filtrarAdministradores() {
         estado: $('#filtro-estado').val()
     };
 
-    // Enviar petición AJAX
+
     $.ajax({
         url: 'js/filtrar_administradores.php',
         type: 'POST',
@@ -342,7 +338,7 @@ function actualizarTablaAdministradores(data) {
         return;
     }
 
-    // Generar filas de la tabla
+
     data.forEach(admin => {
         const $tr = $('<tr>')
             .append($('<td>').text(admin.id || ''))

@@ -138,12 +138,11 @@
 
             </ul>
         </nav>
-</header>
-    
+</header>    
     <div class="content">
         <section class="seccion" id="inicio">
                 <div class="title-section">
-                    <h2 class="inicio">Bienvenido <?php echo $_SESSION['usuario'] ?? 'Usuario'; ?></h2>
+                    <h2 class="inicio">Bienvenido <?php echo $_SESSION['nombre_completo'] ?? 'Usuario'; ?></h2>
                 </div>
 
                 <div>
@@ -469,13 +468,13 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">Nombre Completo</th>
+                                <th scope="col" style="width: 30%;">Nombre Completo</th>
                                 <th scope="col">Tipo Documento</th>
                                 <th scope="col">Numero Documento</th>
                                 <th scope="col">Teléfono</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Observaciones</th>
-                                <th scope="col" class="tabla-acciones">Acciones</th>
+                                <th scope="col" style="width:10%">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="tabla-huespedes">
@@ -492,7 +491,7 @@
                                     <td><?=$fila["TELEFONOHUESPED"]?></td>
                                     <td><?=$fila["EMAIL"]?></td>
                                     <td><?=$fila["OBSEVACIONES"]?></td>
-                                    <td><button>ACCION</button></td>
+                                    <td><a href="php/editar_huesped.php?id=<?=$fila["idHUESPED"]?>" class="btn  btn-primary">Editar</a></td>
                                 </tr>
                                 
                                 
@@ -718,7 +717,7 @@
             
 
             <div class="content-section">
-            <!-- <form class="filter filter-administrador">
+            <form class="filter filter-administrador">
                 <p>Filtrar por:</p>
                 <div class="filter-inputs">
                     <div class="filter-group">
@@ -749,7 +748,7 @@
                 <button type="button" class="btn-buscar" onclick="filtrarAdministradores()">Buscar</button>
                 <button type="button" class="btn-limpiar" onclick="limpiarFiltrosAdministradores()">Limpiar</button>
                 <a href="./php/crear_usuario.php" class="btn-buscar">Crear Nuevo Usuario</a>
-            </form> -->
+            </form>
             <div class="table-container">
                 <!-- Tabla -->
                 <table class="table-administrador table">

@@ -2,6 +2,8 @@
 include "../config/conexion.php";
 $conn = conectarDB();
 
+session_start();
+$returnto= $_SESSIOn["rol"]=="ADMIN" ? 'index.php' : 'panelEmpleado';
 
 
 
@@ -52,7 +54,7 @@ if(!$_POST["habitacion"]){
     
     $conn->close(); 
     echo "<script>
-    location.href='../index.php?section=registro-de-huespedes'
+    location.href='../$returnto.php?section=registro-de-huespedes'
     </script>";
 }
 

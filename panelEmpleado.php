@@ -155,43 +155,54 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
                 </form>
             </div>
         </section>
-
         <section class="seccion" id="historial-de-pagos">
             <div class="title-section">
                 <h2>Historial de Pagos</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
-                    <p>Filtrar por:</p>
+                <form class="filter">
+                    
                     <div class="filter-inputs">
 
-                        <!-- ID, MONTO, Fecha, huesped, estadia -->
-                        <label for="filtro-servicio-pago">ID:</label>
-                        <input type="number" id="filtro-servicio-pago" class="filter-ID" name="filtro-servicio-pago" placeholder="0"> 
-                        <label for="monto-pago">Monto:</label>
-                        <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
-                        <label for="fecha-inicio-pago">fecha inicio:</label>
-                        <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
-                        <label for="fecha-fin-pago">Fecha fin:</label>
+                        <div class="filter-group">
+                            <label for="id-pago">ID:</label>
+                            <input type="number" id="id-pago" class="filter-ID" name="id-pago" placeholder="0"> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="monto-pago">Monto:</label>
+                            <input type="number" id="monto-pago" name="monto-pago" placeholder=""> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="fecha-inicio-pago">fecha inicio:</label>
+                            <input type="date" id="fecha-inicio-pago" name="fecha-inicio-pago" placeholder=""> 
+
+                        </div>
+                        <div class="filter-group">
+                            <label for="fecha-fin-pago">Fecha fin:</label>
                         <input type="date" id="fecha-fin-pago" name="fecha-fin-pago" placeholder=""> 
-                        <label for="huesped-pago">Huesped:</label>
-                        <input type="number" id="huesped-pago" name="huesped-pago" placeholder=""> 
+                        </div>
+                        <div class="filter-group">
+                            <label for="huesped-pago">Huesped:</label>
+                            <input type="text" id="huesped-pago" name="huesped-pago" placeholder="">
+                        </div>
+                        <input type="hidden" name="form" value="tabla-pagos">
                     </div>
-                    <button onclick="" class="btn-buscar" value="registros-pagos,pagos,filtro-servicio-pago,monto-pago,fecha-inicio-pago,fecha-fin-pago,huesped-pago,id-estadia-pago">Buscar</button>
-                </div>
+                    <button class="btn-buscar" type="submit" onclick="filtrarPagos()">Buscar</button>
+                    </form>
 
                 <div class="table-container">
-                    <table class="tabla-pagos">
-                        <thead>
+                    <table class="tabla-pagos table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>ID Pago</th>
-                                <th>Monto</th>
-                                <th>FECHA DE PAGO</th>
-                                <th>Huesped</th>
-                                <th>id Estadia</th>
-                                <th>Empleado</th>
+                                <th scope="col">ID Pago</th>
+                                <th scope="col">Monto</th>
+                                <th scope="col">FECHA DE PAGO</th>
+                                <th scope="col">Huesped</th>
+                                <th scope="col">id Estadia</th>
                                 
-                            
+                                <th scope="col" class="tabla-acciones">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="registros-pagos">
@@ -201,8 +212,6 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
                                 //obtener nombre del huesped:
                                 $id_huesped=mysqli_fetch_assoc(mysqli_query($conn,
                                 'SELECT * from huesped WHERE idHUESPED = ' . $fila["HUESPED_idHUESPED"] ));
-                                
-                                
                                 ?>
                                 <tr>
                                     
@@ -211,10 +220,12 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
                                     <td><?= $fila["idPAGOS"]?></td>
                                     <td><?= $fila["MONTO"]?></td>
                                     <td><?= $fila["FECHA_PAGO"]?></td>
-                                    <td><?= $fila["HUESPED_idHUESPED"]?></td>
+                                    <!-- <td><?= $fila["HUESPED_idHUESPED"]?></td> -->
                                     <td><?= $id_huesped["NOMBRECOMPLETO"]?></td>
                                     <td><?= $fila["ESTADIA_idESTADIA"]?></td>
+                                    <td><a href="./php/crear_cancelacion.php?idPago=<?=$fila["idPAGOS"]?>" class="btn btn-danger">Cancelar</a></td>
 
+                                    
                                 </tr>
                             <?php
                             }
@@ -322,42 +333,51 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
             <h2>Lista de Huéspedes</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
-                    <p>Filtrar por:</p>
+                <form class="filter">
                     <div>
-                        <label for="filtro-nombre">Nombre:</label>
-                        <input type="text" id="filtro-nombre" placeholder="Buscar por nombre">
+                        <div class="filter-group">
+                            <label for="filtro-nombre">Nombre:</label>
+                            <input type="text" id="filtro-nombre" placeholder="Buscar por nombre">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filtro-numero-documento">Documento</label>
+                            <input type="number" id="filtro-numero-documento" name="filtro-numero-documento" placeholder="Buscar por nombre">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-documento">Tipo Documento:</label>
+                            <select id="filtro-documento" name="tipo_documento">
+                                <option value="">Seleccione un tipo...</option>
+                                <option value="cedula-extranjeria">Cédula de Extranjería</option>
+                                <option value="cedula-identidad">Cédula de Identidad</option>
+                                <option value="pasaporte">Pasaporte</option>
+                                <option value="tarjeta-identidad">Tarjeta de Identidad</option>
+                                <option value="permiso-proteccion">Permiso por Protección Temporal</option>
+                            </select>
+                        </div>
+
+                        <!-- Elementos NO encapsulados -->
                         
-                        <label for="filtro-documento">Tipo Documento:</label>
-                        <select id="filtro-documento" name="tipo_documento" required>
-                            <option value="">Seleccione un tipo...</option>
-                            <option value="cedula-extranjeria">Cédula de Extranjería</option>
-                            <option value="cedula-identidad">Cédula de Identidad</option>
-                            <option value="pasaporte">Pasaporte</option>
-                            <option value="tarjeta-identidad">Tarjeta de Identidad</option>
-                            <option value="permiso-proteccion">Permiso por Protección Temporal</option>
-                        </select>
-                        
-                        <button class="btn-buscar">Buscar</button>
+                        <button class="btn-buscar" type="submit" onclick="filtroHuespedes()">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                     </div>
-                </div>
+                </form>
                 
                 <div class="table-container">
-                    <table class="tabla-huespedes">
-                        <thead>
+                    <table class="tabla-huespedes table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>ID</th>
-                                <th>Nombre Completo</th>
-                                <th>Tipo Documento</th>
-                                <th>Numero Documento</th>
-                                <th>Teléfono</th>
-                                <th>Email</th>
-                                <th>Observaciones</th>
-                                <th>Acciones</th>
+                                <th scope="col">ID</th>
+                                <th scope="col" style="width: 30%;">Nombre Completo</th>
+                                <th scope="col">Tipo Documento</th>
+                                <th scope="col">Numero Documento</th>
+                                <th scope="col">Teléfono</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Observaciones</th>
+                                <th scope="col" style="width:10%">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="registros-tabla">
+                        <tbody class="registros-tabla" id="tabla-huespedes">
                             <?php 
                             $huesped=mysqli_query($conn,"SELECT * from huesped ORDER BY idHUESPED DESC LIMIT 15");
                             while($fila = mysqli_fetch_assoc($huesped)){
@@ -371,7 +391,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
                                     <td><?=$fila["TELEFONOHUESPED"]?></td>
                                     <td><?=$fila["EMAIL"]?></td>
                                     <td><?=$fila["OBSEVACIONES"]?></td>
-                                    <td><button>ACCION</button></td>
+                                    <td><a href="php/editar_huesped.php?id=<?=$fila["idHUESPED"]?>" class="btn  btn-primary">Editar</a></td>
                                 </tr>
                                 
                                 
@@ -390,47 +410,45 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
             <h2>Estadias</h2>
             </div>
             <div class="content-section">
-                <div class="filter">
-                    <p>Filtrar por:</p>
+                <form class="filter">
                     <div>
-                        <label for="filtro-id-estadia">ID:</label>
-                        <input type="number" name="filtro-id-estadia" class="filter-ID" id="filtro-id-estadia">
-                        <label for="filtro-inicio-estadia">Inicio:</label>
-                        <input type="date" name="filtro-inicio-estadia" id="filtro-inicio-estadia">
-                        <label for="filtro-fin-estadia">Fin:</label>
-                        <input type="date" name="filtro-fin-estadia" id="filtro-fin-estadia">
-                        <label for="filtro-registro-estadia">Registrado:</label>
-                        <input type="date" name="filtro-registro-estadia" id="filtro-registro-estadia">
-                        <label for="filtro-costo-estadia">Costo:</label>
-                        <input type="number" name="filtro-costo-estadia" id="filtro-costo-estadia">
-                        <label for="filtro-habitacion-estadia">Habitacion:</label>
-                        <input type="number" name="filtro-habitacion-estadia" id="filtro-habitacion-estadia">
-                        
-                        <button class="btn-buscar">Buscar</button>
+                        <div class="filter-group">
+                            <label for="filtro-inicio-estadia">Inicio:</label>
+                            <input type="date" name="filtro-inicio-estadia" id="filtro-inicio-estadia">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-fin-estadia">Fin:</label>
+                            <input type="date" name="filtro-fin-estadia" id="filtro-fin-estadia">
+                        </div>
+
+                        <!-- <div class="filter-group">
+                            <label for="filtro-habitacion-estadia">Habitacion:</label>
+                            <input type="number" name="filtro-habitacion-estadia" id="filtro-habitacion-estadia">
+                        </div> -->
+
+                        <!-- Elementos NO encapsulados -->
+                        <button class="btn-buscar" type="submit" onclick="filtrarEstadias()">Buscar</button>
                         <button class="btn-limpiar">Limpiar</button>
                     </div>
-                </div>
+                </form>
                 
                 <div class="table-container">
-                    <table class="tabla-huespedes">
-                        <thead>
+                    <table class="tabla-huespedes table">
+                        <thead class="thead-dark">
                             <tr>
-                                <th>ID</th>
-                                <th>Inicio</th>
-                                <th>FIN</th>
-                                <th>Registrado</th>
-                                <th>Costo</th>
-                                <th>Habitacion</th>
-                                <th>Acciones</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Inicio</th>
+                                <th scope="col">FIN</th>
+                                <th scope="col">Registrado</th>
+                                <th scope="col">Costo</th>
+                                
                             </tr>
                         </thead>
                         <tbody class="registros-tabla" id="registros-estadia">
                             <?php 
                             $estadia=mysqli_query($conn,"SELECT * from estadia ORDER BY FECHA_REGISTRO DESC LIMIT 15");
                             while($fila = mysqli_fetch_assoc($estadia)){
-                                $Nhabitacion= $fila["HABITACIONES_idHABITACIONES"];
-                                $habitacion=mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM habitaciones WHERE idHABITACIONES = $Nhabitacion"));
-
                                 ?>
                                 <tr>
                                     <td><?=$fila["idESTADIA"]?></td>
@@ -439,8 +457,8 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
                                     <td><?=$fila["FECHA_REGISTRO"]?></td>
                                     <td><?=$fila["COSTO"]?></td>
                                     
-                                    <td><?=$habitacion["NUMERO"]?></td>
-                                    <td><button>ACCION</button></td>
+                                    
+
                                 </tr>
                                 
                                 
@@ -526,7 +544,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
     <script src="js/navegacionSecciones.js?v=<?php echo time(); ?>"></script>
     <script src="js/filtro.js?v=<?php echo time(); ?>"></script>
     <script src="js/habitaciones_acciones.js?v=<?php echo time(); ?>"></script>
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </body>
 </html>
