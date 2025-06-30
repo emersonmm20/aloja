@@ -50,7 +50,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
           <div id="comprobar"></div>
         </div>
 
-         <button type="submit" id="enviar" class="btn btn-primary">Actualizar</button>
+         <button type="submit" id="enviar" disabled class="btn btn-primary">Actualizar</button>
         <a href="../index.php" class="btn btn-secondary">Cancelar</a>
       </form>
     </section>

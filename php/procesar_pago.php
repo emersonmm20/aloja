@@ -134,7 +134,7 @@ else{
 
     // Array ( [usuario] => mart123 [rol] => EMPLEADO [nombre_completo] => marta gonzalez )
 
-    $returnto= $_SESSIOn["rol"]=="ADMIN" ? 'index.php' : 'panelEmpleado';
+    $returnto= $_SESSIOn["rol"]=="ADMIN" ? 'index' : 'panelEmpleado';
     echo " 
     <script>
     window.location.href = '../$returnto.php?section=registro-de-pagos'

@@ -16,6 +16,7 @@ try {
     $params = [];
     $types = '';
 
+
     if (!empty($nombre)) {
         $sql .= " AND NOMBRECOMPLETO LIKE CONCAT('%', ?, '%')";
         $params[] = $nombre;

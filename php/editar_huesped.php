@@ -1,6 +1,8 @@
 <?php
 include '../config/conexion.php';
 $conn = conectarDB();
+session_start();
+$returnto= $_SESSION["rol"]=="ADMIN" ? 'index' : 'panelEmpleado';
 
 if($_SERVER['REQUEST_METHOD']=="POST"){
     $id=$_POST["id"];
@@ -13,10 +15,10 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
     try {
         mysqli_query($conn,$sql);
         echo "<script>alert('Datos actualizados')</script>";
-        header("location: ../index.php?section=lista-de-huespedes");
+        header("location: ../$returnto.php?section=lista-de-huespedes");
     } catch (\Throwable $th) {
         echo "<script>alert('ha ocurrido un error durante la ejecucion')</script>";
-        header("location: ../index.php");
+        header("location: ../$returnto.php");
     }    
 
 

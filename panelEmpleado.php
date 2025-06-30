@@ -59,13 +59,6 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
                         <li><a  class="select-section-button">Lista de huespedes</a></li> 
                     </ul>
                 </li>
-
-                <li><a>Tarifas del Hotel</a>
-                    <ul>
-                        <li><a  class="select-section-button">Tarifas</a></li>
-                        
-                    </ul>
-                </li>
   
                 <li>
                     <a href="php/logout.php"
@@ -328,78 +321,67 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
                 </div>
             </div>
         </section>  
-        <section class="seccion" id="lista-de-huespedes">
+        <section class="seccion" id="administrar-habitaciones">
             <div class="title-section">
-            <h2>Lista de Huéspedes</h2>
+                <h2>Administrar habitaciones</h2>
             </div>
             <div class="content-section">
-                <form class="filter">
-                    <div>
-                        <div class="filter-group">
-                            <label for="filtro-nombre">Nombre:</label>
-                            <input type="text" id="filtro-nombre" placeholder="Buscar por nombre">
-                        </div>
-                        <div class="filter-group">
-                            <label for="filtro-numero-documento">Documento</label>
-                            <input type="number" id="filtro-numero-documento" name="filtro-numero-documento" placeholder="Buscar por nombre">
-                        </div>
-
-                        <div class="filter-group">
-                            <label for="filtro-documento">Tipo Documento:</label>
-                            <select id="filtro-documento" name="tipo_documento">
-                                <option value="">Seleccione un tipo...</option>
-                                <option value="cedula-extranjeria">Cédula de Extranjería</option>
-                                <option value="cedula-identidad">Cédula de Identidad</option>
-                                <option value="pasaporte">Pasaporte</option>
-                                <option value="tarjeta-identidad">Tarjeta de Identidad</option>
-                                <option value="permiso-proteccion">Permiso por Protección Temporal</option>
-                            </select>
-                        </div>
-
-                        <!-- Elementos NO encapsulados -->
-                        
-                        <button class="btn-buscar" type="submit" onclick="filtroHuespedes()">Buscar</button>
-                        <button class="btn-limpiar">Limpiar</button>
-                    </div>
-                </form>
+                <!--  -->
+                <a style="display:block;" href="php/agregar_habitacion.php" class="btn btn-primary btn-lg btn-block">Agregar habitacion</a>
+            
                 
                 <div class="table-container">
-                    <table class="tabla-huespedes table">
+                    <table class="tabla-pagos table">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col" style="width: 30%;">Nombre Completo</th>
-                                <th scope="col">Tipo Documento</th>
-                                <th scope="col">Numero Documento</th>
-                                <th scope="col">Teléfono</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Observaciones</th>
-                                <th scope="col" style="width:10%">Acciones</th>
+                                <th scope="col">Numero</th>
+                                <th scope="col">Capacidad</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col" class="tabla-acciones">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="registros-tabla" id="tabla-huespedes">
-                            <?php 
-                            $huesped=mysqli_query($conn,"SELECT * from huesped ORDER BY idHUESPED DESC LIMIT 15");
-                            while($fila = mysqli_fetch_assoc($huesped)){
+                        <tbody class="registros-tabla" id="tabla-habitaciones">
+                            <?php
+                            $habitaciones = mysqli_query($conn, "SELECT * from habitaciones");
+                            while($fila=mysqli_fetch_assoc($habitaciones)){
+                                $id=$fila["idHABITACIONES"];
 
                                 ?>
                                 <tr>
-                                    <td><?=$fila["idHUESPED"]?></td>
-                                    <td><?=$fila["NOMBRECOMPLETO"]?></td>
-                                    <td><?=$fila["TIPODOCUMENTO"]?></td>
-                                    <td><?=$fila["DOCUMENTO"]?></td>
-                                    <td><?=$fila["TELEFONOHUESPED"]?></td>
-                                    <td><?=$fila["EMAIL"]?></td>
-                                    <td><?=$fila["OBSEVACIONES"]?></td>
-                                    <td><a href="php/editar_huesped.php?id=<?=$fila["idHUESPED"]?>" class="btn  btn-primary">Editar</a></td>
+                                    <td><?=$fila["NUMERO"] ?></td>
+                                    <td><?=$fila["CAPACIDAD"] ?> Personas</td>
+                                    <td id=<?="estado-habitacion-$id"?>><?=str_replace("_", " ", $fila["ESTADO"])?></td>
+                                    <td id=<?="acciones-habitacion-" . $id?>>
+                                        <button 
+                                        class="btn-estado-habitacion btn btn-primary"
+                                        id=<?="cambiar-estado-boton-$id"?>
+                                        value=<?=$id?> onclick=<?="mostrarSelectHabitaciones($id)"?> >Cambiar Estado</button>
+                                        
+                                        <div id=<?="select-estado-habitacion-$id"?>
+                                             class="select-estado-habitacion rounded">
+                                            <select id=<?="nuevo-estado-habitacion-$id" ?> class="select-table">
+                                                <option value="">Selecciona Estado</option>
+                                                <option value="OCUPADA">Ocupada</option>
+                                                <option value="DESOCUPADA">Desocupada</option>
+                                                <option value="FUERA_DE_SERVICIO">Fuera de servicio</option>
+                                            </select>
+                                            <button class="actualizar-estado-habitacion bg-success text-light btn btn-success"
+                                            onclick=<?="enviarYActualizar($id)"?>
+                                            value=<?=$id?>>Modificar</button>
+                                            <button class="cancelar-estado btn btn-danger" value=<?=$id?>>X</button>
+                                        </div>
+                                    </td>
                                 </tr>
                                 
-                                
-                                
+                            
                             <?php
                             }
-                            
                             ?>
+                        
+                            <!-- Los registros se cargarán dinámicamente -->
+                            <tr>
+                                <td colspan="8" class="sin-registros">No hay más habitaciones</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -525,6 +507,83 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
             </form>
             </div>
         </section>
+        <section class="seccion" id="lista-de-huespedes">
+            <div class="title-section">
+            <h2>Lista de Huéspedes</h2>
+            </div>
+            <div class="content-section">
+                <form class="filter">
+                    <div>
+                        <div class="filter-group">
+                            <label for="filtro-nombre">Nombre:</label>
+                            <input type="text" id="filtro-nombre" placeholder="Buscar por nombre">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filtro-numero-documento">Documento</label>
+                            <input type="number" id="filtro-numero-documento" name="filtro-numero-documento" placeholder="Buscar por nombre">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-documento">Tipo Documento:</label>
+                            <select id="filtro-documento" name="tipo_documento">
+                                <option value="">Seleccione un tipo...</option>
+                                <option value="cedula-extranjeria">Cédula de Extranjería</option>
+                                <option value="cedula-identidad">Cédula de Identidad</option>
+                                <option value="pasaporte">Pasaporte</option>
+                                <option value="tarjeta-identidad">Tarjeta de Identidad</option>
+                                <option value="permiso-proteccion">Permiso por Protección Temporal</option>
+                            </select>
+                        </div>
+
+                        <!-- Elementos NO encapsulados -->
+                        
+                        <button class="btn-buscar" type="submit" onclick="filtroHuespedes()">Buscar</button>
+                        <button class="btn-limpiar">Limpiar</button>
+                    </div>
+                </form>
+                
+                <div class="table-container">
+                    <table class="tabla-huespedes table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col" style="width: 30%;">Nombre Completo</th>
+                                <th scope="col">Tipo Documento</th>
+                                <th scope="col">Numero Documento</th>
+                                <th scope="col">Teléfono</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Observaciones</th>
+                                <th scope="col" style="width:10%">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="registros-tabla" id="tabla-huespedes">
+                            <?php 
+                            $huesped=mysqli_query($conn,"SELECT * from huesped ORDER BY idHUESPED DESC LIMIT 15");
+                            while($fila = mysqli_fetch_assoc($huesped)){
+
+                                ?>
+                                <tr>
+                                    <td><?=$fila["idHUESPED"]?></td>
+                                    <td><?=$fila["NOMBRECOMPLETO"]?></td>
+                                    <td><?=$fila["TIPODOCUMENTO"]?></td>
+                                    <td><?=$fila["DOCUMENTO"]?></td>
+                                    <td><?=$fila["TELEFONOHUESPED"]?></td>
+                                    <td><?=$fila["EMAIL"]?></td>
+                                    <td><?=$fila["OBSEVACIONES"]?></td>
+                                    <td><a href="php/editar_huesped.php?id=<?=$fila["idHUESPED"]?>" class="btn  btn-primary">Editar</a></td>
+                                </tr>
+                                
+                                
+                                
+                            <?php
+                            }
+                            
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
         
 
     </div> 
@@ -545,7 +604,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] != 'EMPLEADO') {
     <script src="js/filtro.js?v=<?php echo time(); ?>"></script>
     <script src="js/habitaciones_acciones.js?v=<?php echo time(); ?>"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 </body>
 </html>
 

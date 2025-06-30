@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           </select>
         </div> -->
         <button type="submit" class="btn btn-success">Guardar</button>
-        <a href="index.php" class="btn btn-secondary">Volver</a>
+        <a href="../index.php" class="btn btn-secondary">Volver</a>
       </form>
     </section>
   </div>

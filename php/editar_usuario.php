@@ -52,14 +52,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="mb-3">
          <label class="form-label">Usuario</label>
-         <input type="number" class="form-control" name="documento_id" value="<?=$usuario['USUARIO']?>" required>
+         <input type="text" class="form-control" name="documento_id" value="<?=$usuario['USUARIO']?>" required>
         </div>
         
         <div class="mb-3">
          <label class="form-label">Rol</label>
          <select name="rol" class="form-select">
           <option <?= $usuario['ROL'] == 'ADMIN' ? 'selected' : '' ?> value="ADMIN">Administrador</option>
-          <option <?= $usuario['ROL'] == 'EMPLEADO' ? 'selected' : '' ?> value="EMPLEADO">Administrador</option>
+          <option <?= $usuario['ROL'] == 'EMPLEADO' ? 'selected' : '' ?> value="EMPLEADO">Empleado</option>
 
          </select>
         </div>

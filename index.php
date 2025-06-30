@@ -304,7 +304,6 @@
                 </div>
             </div>
         </section>  
-
         <section class="seccion text-start " id="servicios-y-alojamientos">
             <div class="title-section">
 
@@ -361,7 +360,7 @@
                 </table>
             </div>
         </section>
-        
+
         <section class="seccion" id="administrar-habitaciones">
             <div class="title-section">
                 <h2>Administrar habitaciones</h2>
@@ -427,7 +426,7 @@
                     </table>
                 </div>
             </div>
-        </section>  
+        </section> 
         <section class="seccion" id="lista-de-huespedes">
             <div class="title-section">
             <h2>Lista de Huéspedes</h2>
@@ -794,7 +793,6 @@
             
             </div>
         </section>
-
 
         <section class="seccion" id="generar">
             <div class="title-section mb-4">
