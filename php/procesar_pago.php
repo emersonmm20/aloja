@@ -1,5 +1,7 @@
 <?php
 include "../config/conexion.php";
+
+
 $conn= conectarDB();
 // form data:
     //tipo_documento
@@ -29,6 +31,8 @@ if ($huesped->num_rows == 0){
     alert('Huesped no existe')
     </script>");
     $conn->close(); 
+
+    
 
 ?>
 
@@ -126,11 +130,18 @@ else{
     //ocupar habitacion
     mysqli_query($conn, "UPDATE `habitaciones` SET `ESTADO` = 'OCUPADA' WHERE `idHABITACIONES` = $habitacion");
     $conn->close(); 
+    session_start();
+
+    // Array ( [usuario] => mart123 [rol] => EMPLEADO [nombre_completo] => marta gonzalez )
+
+    $returnto= $_SESSIOn["rol"]=="ADMIN" ? 'index' : 'panelEmpleado';
     echo " 
     <script>
-    window.location.href = '../index.php?section=registro-de-pagos'
+    window.location.href = '../$returnto.php?section=registro-de-pagos'
     </script>";
+    
 
 
 }
 ?>
+

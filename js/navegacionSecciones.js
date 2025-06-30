@@ -35,7 +35,6 @@
             showSection(sectionId);
         });
     });
-
     // Mostrar primera sección al cargar
     if (sections.length > 0) {
         // Usamos el ID real de la primera sección en lugar de generarlo
@@ -72,13 +71,3 @@ function ocultarFormularioEditar() {
 }
 
     }
-
-
-// });
-
-// window.addEventListener("load",()=>{
-//     setTimeout(()=>{
-//         showSection('$section')
-//     },500)
-// })
-

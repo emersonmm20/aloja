@@ -2,6 +2,29 @@
 include '../config/conexion.php';
 $conn = conectarDB();
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $nombre = $_POST['nombre'] ?? '';
+    $usuario = $_POST['usuario'] ?? ''; // Asegúrate de que este campo exista en tu formulario
+    $password = md5($_POST['password']);
+    $rol = $_POST['rol'] ?? '';
+
+    // Consulta corregida (sin comillas en los ?)
+    $stmt = $conn->prepare("INSERT INTO `administrador` (`NOMBRE_COMPLETO`, `USUARIO`, `PASSWORD`, `ROL`) VALUES (?, ?, ?, ?)");
+
+    if ($stmt === false) {
+        die("Error en prepare: " . $conn->error);
+    }
+
+    // Tipos de parámetros: s = string, s = string, s = string, s = string
+    $stmt->bind_param("ssss", $nombre, $usuario, $password, $rol);
+    
+    if ($stmt->execute()) {
+        header("Location: ./../index.php");
+        exit;
+    } else {
+        echo "Error al crear: " . $stmt->error;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -16,34 +39,35 @@ $conn = conectarDB();
   <div class="container">
     <section class="seccion">
       <h2 class="mb-4">Crear Nuevo Usuario</h2>
-      <form method="post" action="./guardar_usuario.php">
+      <form method="POST" >
         <div class="mb-3">
           <label for="nombre" class="form-label">Nombre</label>
           <input type="text" class="form-control" name="nombre" required>
         </div>
         <div class="mb-3">
-          <label for="documento_id" class="form-label">Documento ID</label>
-          <input type="number" class="form-control" name="documento_id" required>
+          <label for="usuario" class="form-label">Nombre de usuario</label>
+          <input type="text" class="form-control" name="usuario" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" name="password" required>
         </div>
         <div class="mb-3">
           <label for="rol" class="form-label">Rol</label>
           <select name="rol" class="form-select">
-            <option>Administrador</option>
-            <option>Editor</option>
-            <option>Empleado</option>
-            <option>Cocinero</option>
-            <option>Celador</option>
+            <option value="ADMIN">Administrador</option>
+            <option value="EMPLEADO">Empleado</option>
           </select>
         </div>
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label for="estado" class="form-label">Estado</label>
           <select name="estado" class="form-select">
             <option>Activo</option>
             <option>Inactivo</option>
           </select>
-        </div>
+        </div> -->
         <button type="submit" class="btn btn-success">Guardar</button>
-         <a href="index.php" class="btn btn-secondary">Volver</a>
+        <a href="../index.php" class="btn btn-secondary">Volver</a>
       </form>
     </section>
   </div>

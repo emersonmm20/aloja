@@ -2,7 +2,8 @@
 include "../config/conexion.php";
 $conn = conectarDB();
 
-
+session_start();
+$returnto= $_SESSIOn["rol"]=="ADMIN" ? 'index' : 'panelEmpleado';
 
 
 //DATOS: $_POST
@@ -52,10 +53,9 @@ if(!$_POST["habitacion"]){
     
     $conn->close(); 
     echo "<script>
-    location.href='../index.php?section=registro-de-huespedes'
+    location.href='../$returnto.php?section=registro-de-huespedes'
     </script>";
 }
-
 else {
     include "registrar_estadia.php";
 
@@ -79,11 +79,9 @@ else {
     registrarPago($conn,$monto,date('Y-m-d'),$id_huesped,$id_estadia);
     $conn->close(); 
 
-
-
 }
 
-echo "<script>location.href = '../index.php?section=registro-de-pagos'</script>"
+echo "<script>location.href = '../index.php?section=registro-de-pagos'</script>";
 
 
 ?>
